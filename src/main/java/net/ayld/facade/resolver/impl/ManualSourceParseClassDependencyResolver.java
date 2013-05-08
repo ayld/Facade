@@ -7,6 +7,7 @@ import java.util.Set;
 import net.ayld.facade.resolver.ClassDependencyResolver;
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
@@ -42,8 +43,9 @@ public class ManualSourceParseClassDependencyResolver implements ClassDependency
 		
 		final String sourceFileContent = Resources.toString(sourceFile.toURI().toURL(), Charsets.UTF_8);
 		
-		final String firstLine = sourceFileContent.split("\\\n")[0].trim();
-		final String firstWord = firstLine.split(" ")[0].trim();
+		// XXX unsafe call to iterator.next()
+		final String firstLine = Splitter.on("\n").split(sourceFileContent).iterator().next();
+		final String firstWord = Splitter.on(" ").split(firstLine).iterator().next();
 		
 		if (!VALID_SOURCE_FILE_FIRST_WORDS.contains(firstWord)) {
 			return false;
