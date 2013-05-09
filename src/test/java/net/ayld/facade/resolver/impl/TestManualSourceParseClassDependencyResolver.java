@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.ayld.facade.resolver.ClassDependencyResolver;
 
@@ -14,11 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:META-INF/test-context.xml"})
 public class TestManualSourceParseClassDependencyResolver {
+	
+	private static final String JAVA_IMPORT_KEYWOD = "import";
 	
 	@Autowired
 	private ClassDependencyResolver classDependencyResolver;
@@ -27,7 +32,24 @@ public class TestManualSourceParseClassDependencyResolver {
 	public void testResolve() throws IOException, URISyntaxException {
 		final URL validSourceUrl = Resources.getResource("test-classes/ValidCoffee.java");
 		
-		classDependencyResolver.resolve(new File(validSourceUrl.toURI()));
+		// get dependencies in a way different than the resolver
+		final String content = Resources.toString(validSourceUrl, Charsets.UTF_8);
+		final String[] lines = content.split("\\\n");
+		
+		final Set<String> dependencies = new HashSet<>();
+		for (String line : lines) {
+			if (line.startsWith(JAVA_IMPORT_KEYWOD)) {
+				
+				final String dependency = line.split(" ")[1].replaceAll(";", ""); // not very pretty ...
+				dependencies.add(dependency);
+			}
+		}
+		
+		// get dependencies hrough the resolver
+		final Set<String> resolvedDependencies = classDependencyResolver.resolve(new File(validSourceUrl.toURI()));
+		
+		// result sets should match
+		Assert.assertEquals(dependencies, resolvedDependencies);
 	}
 	
 	@Test
@@ -38,10 +60,10 @@ public class TestManualSourceParseClassDependencyResolver {
 			classDependencyResolver.resolve(new File(validSourceUrl.toURI())); // should blow up
 		} catch (IllegalArgumentException e) {
 			
-			// ok
+			// party :)
 			
 			return;
 		}
-		Assert.fail(); // not ok
+		Assert.fail(); // not party :(
 	}
 }

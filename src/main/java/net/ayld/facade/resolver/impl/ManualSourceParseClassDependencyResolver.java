@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.util.Set;
 
 import net.ayld.facade.resolver.ClassDependencyResolver;
+import net.ayld.facade.util.Tokenizer;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 
 public class ManualSourceParseClassDependencyResolver implements ClassDependencyResolver{
@@ -25,8 +26,20 @@ public class ManualSourceParseClassDependencyResolver implements ClassDependency
 		if (!isSourceFile(sourceFile)) {
 			throw new IllegalArgumentException("source file: " + sourceFile + ", is not a Java source file or does not exist");
 		}
-		// TODO Auto-generated method stub
-		return null;
+		
+		final String sourceFileContent = Resources.toString(sourceFile.toURI().toURL(), Charsets.UTF_8);
+		
+		// we can somehow select only lines starting with import so we don't need to iterate over every single line
+		final Set<String> result = Sets.newHashSet();
+		for (String line : Splitter.on("\n").split(sourceFileContent)) {
+			
+			if (line.startsWith(JAVA_IMPORT_KEYWOD)) {
+				
+				final String dependency = Tokenizer.delimiter(" ").tokenize(line).lastToken().replaceAll(";", "");
+				result.add(dependency);
+			}
+		}
+		return ImmutableSet.copyOf(result);
 	}
 	
 	private static boolean isSourceFile(File sourceFile) throws IOException {
@@ -35,7 +48,7 @@ public class ManualSourceParseClassDependencyResolver implements ClassDependency
 		}
 		
 		final String name = sourceFile.getName();
-		final String extention = Strings.nullToEmpty(name.split("\\.")[1]);
+		final String extention = Tokenizer.delimiter(".").tokenize(name).lastToken();
 		
 		if (!extention.equals(JAVA_SOURCE_FILE_EXTENTION)) {
 			return false;
@@ -43,9 +56,8 @@ public class ManualSourceParseClassDependencyResolver implements ClassDependency
 		
 		final String sourceFileContent = Resources.toString(sourceFile.toURI().toURL(), Charsets.UTF_8);
 		
-		// XXX unsafe call to iterator.next()
-		final String firstLine = Splitter.on("\n").split(sourceFileContent).iterator().next();
-		final String firstWord = Splitter.on(" ").split(firstLine).iterator().next();
+		final String firstLine = Tokenizer.delimiter("\n").tokenize(sourceFileContent).firstToken();
+		final String firstWord = Tokenizer.delimiter(" ").tokenize(firstLine).firstToken();
 		
 		if (!VALID_SOURCE_FILE_FIRST_WORDS.contains(firstWord)) {
 			return false;
