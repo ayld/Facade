@@ -6,6 +6,7 @@ import java.util.Set;
 
 import net.ayld.facade.resolver.ClassDependencyResolver;
 import net.ayld.facade.util.Tokenizer;
+import net.ayld.facade.util.annotation.ThreadSafe;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
@@ -13,6 +14,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 
+@ThreadSafe
 public class ManualSourceParseClassDependencyResolver implements ClassDependencyResolver{
 
 	private static final String JAVA_SOURCE_FILE_EXTENTION = "java";

@@ -45,7 +45,7 @@ public class TestManualSourceParseClassDependencyResolver {
 			}
 		}
 		
-		// get dependencies hrough the resolver
+		// get dependencies through the resolver
 		final Set<String> resolvedDependencies = classDependencyResolver.resolve(new File(validSourceUrl.toURI()));
 		
 		// result sets should match
@@ -64,6 +64,6 @@ public class TestManualSourceParseClassDependencyResolver {
 			
 			return;
 		}
-		Assert.fail(); // not party :(
+		Assert.fail(); // no party :(
 	}
 }
