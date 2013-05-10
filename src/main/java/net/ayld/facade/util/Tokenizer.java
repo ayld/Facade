@@ -9,7 +9,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
-@NotThreadSafe
+@NotThreadSafe // or is it ?!?
 public final class Tokenizer {
 	
 	private String delimiter;

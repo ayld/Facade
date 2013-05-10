@@ -20,7 +20,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:META-INF/test-context.xml"})
+@ContextConfiguration({"classpath:META-INF/test-contexts/testManualSourceParseClassDependencyResolverContext.xml"})
 public class TestManualSourceParseClassDependencyResolver {
 	
 	private static final String JAVA_IMPORT_KEYWOD = "import";

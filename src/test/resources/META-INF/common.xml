@@ -12,17 +12,12 @@
 		
        default-lazy-init="true">
 
-	<import resource="classpath:META-INF/components/service.xml" />
-
 	<context:annotation-config />
 	
 	<context:component-scan base-package="net.ayld"/>
 	
-    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-        <property name="basenames">
-            <list>
-            </list>
-        </property>
-    </bean>
-    
+	<bean id="commentaryUpdateTypeProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:config.properties"/>
+	</bean>
+	
 </beans>

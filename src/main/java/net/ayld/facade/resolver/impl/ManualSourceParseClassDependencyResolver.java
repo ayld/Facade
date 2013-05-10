@@ -44,7 +44,7 @@ public class ManualSourceParseClassDependencyResolver implements ClassDependency
 		return ImmutableSet.copyOf(result);
 	}
 	
-	private static boolean isSourceFile(File sourceFile) throws IOException {
+	private static boolean isSourceFile(File sourceFile) throws IOException { // TODO moar checks needed this is not enough
 		if (sourceFile == null) {
 			return false;
 		}
