@@ -9,5 +9,5 @@ import java.util.jar.JarFile;
  * */
 public interface DependencyBundleResolver { // this name really sux ...
 
-	public Set<JarFile> resolve(String className, Set<JarFile> bundles) throws IOException;
+	public Set<JarFile> resolve(String qualifiedClassName, Set<JarFile> bundles) throws IOException;
 }

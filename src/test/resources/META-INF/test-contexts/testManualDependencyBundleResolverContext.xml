@@ -15,8 +15,12 @@
 			<constructor-arg value="/tmp" type="java.lang.Object"/>
 		</bean>
 		
-		<bean id="bundleResolver" class="net.ayld.facade.resolver.impl.ManualDependencyBundleResolver">
+		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">
 			<property name="workDir" value="${workDir}"/>
+		</bean>
+		
+		<bean id="bundleResolver" class="net.ayld.facade.resolver.impl.ManualDependencyBundleResolver">
+			<property name="jarExploder" ref="jarExploder"/>
 		</bean>
 		
 </beans>
