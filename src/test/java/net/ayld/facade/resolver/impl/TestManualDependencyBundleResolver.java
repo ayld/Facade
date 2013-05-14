@@ -56,11 +56,10 @@ public class TestManualDependencyBundleResolver {
 			bundles.add(new JarFile(new File(bundleUrl.toURI())));
 		}
 		
-		final Set<JarFile> resolved = bundleResolver.resolve("org.primefaces.context.PrimePartialViewContext", bundles);
+		final Set<JarFile> jarsContainingClass = bundleResolver.resolve("org.primefaces.context.PrimePartialViewContext", bundles);
 		
-		System.out.println("resolved: " + resolved);
-		
-		assertTrue(resolved.size() > 0);
+		assertTrue(jarsContainingClass.size() > 0);
+		assertTrue(jarsContainingClass.iterator().next().getName().endsWith("primefaces-3.5.jar"));
 	}
 	
 	private static void delete(File file) throws IOException {

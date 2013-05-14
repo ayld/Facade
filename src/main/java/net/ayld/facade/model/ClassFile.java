@@ -93,6 +93,10 @@ public class ClassFile { // XXX magic numbers
 		return true;
 	}
 
+	public File physicalFile() {
+		return new File(classFile.getAbsolutePath());
+	}
+
 	@Override
 	public String toString() {
 		return classFile.getAbsolutePath();

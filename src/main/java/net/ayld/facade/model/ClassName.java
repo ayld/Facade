@@ -2,6 +2,8 @@ package net.ayld.facade.model;
 
 import java.util.regex.Pattern;
 
+import net.ayld.facade.util.Tokenizer;
+
 public final class ClassName {
 
 	/** 
@@ -25,6 +27,10 @@ public final class ClassName {
 
 	private static boolean isClassName(String qualifiedClassName) {
 		return Pattern.matches(CLASS_NAME_VALIDATION_REGEX, qualifiedClassName);
+	}
+
+	public String shortName() {
+		return Tokenizer.delimiter(".").tokenize(qualifiedClassName).lastToken();
 	}
 	
 	@Override

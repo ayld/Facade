@@ -9,7 +9,6 @@ import java.util.jar.JarFile;
 
 import net.ayld.facade.bundle.JarExploder;
 import net.ayld.facade.dependency.matcher.DependencyMatcherStrategy;
-import net.ayld.facade.dependency.matcher.impl.StringDependencyMatcherStrategy;
 import net.ayld.facade.dependency.resolver.DependencyBundleResolver;
 import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
@@ -25,7 +24,7 @@ import com.google.common.collect.Sets;
 public class ManualDependencyBundleResolver implements DependencyBundleResolver{
 
 	private JarExploder jarExploder;
-	private DependencyMatcherStrategy dependencyMatcher = new StringDependencyMatcherStrategy();
+	private DependencyMatcherStrategy dependencyMatcher;
 	
 	@Override
 	public Set<JarFile> resolve(String qualifiedClassName, Set<JarFile> bundles) throws IOException {
@@ -67,6 +66,7 @@ public class ManualDependencyBundleResolver implements DependencyBundleResolver{
         return results.contains(Boolean.TRUE);
     }
 	
+	@Required
 	public void setDependencyMatcher(DependencyMatcherStrategy matcher) {
 		this.dependencyMatcher = matcher;
 	}

@@ -1,8 +1,8 @@
 package net.ayld.facade.util;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 import java.util.List;
@@ -11,23 +11,24 @@ import org.junit.Test;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Range;
 
 public class TestTokenizer {
 	
 	@Test
 	public void tokenize() {
-		final List<String> tokens = Tokenizer.delimiter(" ").tokenize("why did the chicken cross the road ?").tokens();
+		final String test = "why did the chicken cross the road ?";
 		
+		final List<String> tokens = Tokenizer.delimiter(" ").tokenize(test).tokens();
 		assertNotNull(tokens);
-		assertTrue(tokens.size() == 8);
-		assertTrue(tokens.contains("why"));
-		assertTrue(tokens.contains("did"));
-		assertTrue(tokens.contains("the"));
-		assertTrue(tokens.contains("chicken"));
-		assertTrue(tokens.contains("cross"));
-		assertTrue(tokens.contains("the"));
-		assertTrue(tokens.contains("road"));
-		assertTrue(tokens.contains("?"));
+		
+		final List<String> splitTest = Lists.newArrayList(Splitter.on(" ").split(test));
+		assertTrue(tokens.size() == splitTest.size());
+		
+		for (String part : splitTest) {
+			assertTrue(tokens.contains(part));
+		}
 	}
 	
 	@Test
@@ -39,6 +40,17 @@ public class TestTokenizer {
 		final List<String> nonRegexSplit = Tokenizer.delimiter(".").tokenize(test).tokens();
 		
 		assertFalse(regexSplit.equals(nonRegexSplit));
+	}
+	
+	@Test
+	public void range() {
+		
+		final String test = "somewhere.over.dat.rainbow";
+		
+		final List<String> tokens = Tokenizer.delimiter(".").tokenize(test).tokens();
+		for (int i = 0; i < tokens.size(); i++) {
+			assertTrue(tokens.subList(0, i).equals(Tokenizer.delimiter(".").tokenize(test).tokensIn(Range.closed(0, i))));
+		}
 	}
 	
 	@Test

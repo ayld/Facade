@@ -21,6 +21,16 @@
 		
 		<bean id="bundleResolver" class="net.ayld.facade.dependency.resolver.impl.ManualDependencyBundleResolver">
 			<property name="jarExploder" ref="jarExploder"/>
+			<property name="dependencyMatcher">
+				<bean class="net.ayld.facade.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
+					<property name="conditions">
+						<util:set>
+							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
+						</util:set>
+					</property>
+				</bean>
+			</property>
 		</bean>
 		
 </beans>
