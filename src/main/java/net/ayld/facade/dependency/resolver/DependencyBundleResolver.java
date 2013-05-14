@@ -1,4 +1,4 @@
-package net.ayld.facade.resolver;
+package net.ayld.facade.dependency.resolver;
 
 import java.io.IOException;
 import java.util.Set;

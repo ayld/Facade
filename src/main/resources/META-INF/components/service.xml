@@ -9,13 +9,13 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
 		
-		<bean id="classDependencyResolver" class="net.ayld.facade.resolver.impl.ManualSourceParseClassDependencyResolver"/>
+		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualSourceParseClassDependencyResolver"/>
 		
 		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">
-			<property name="workDir" value="${workDir}"/>
+			<property name="workDir" value="${jar.extraction.dir}"/>
 		</bean>
 		
-		<bean id="bundleResolver" class="net.ayld.facade.resolver.impl.ManualDependencyBundleResolver">
+		<bean id="bundleResolver" class="net.ayld.facade.dependency.resolver.impl.ManualDependencyBundleResolver">
 			<property name="jarExploder" ref="jarExploder"/>
 		</bean>
 		

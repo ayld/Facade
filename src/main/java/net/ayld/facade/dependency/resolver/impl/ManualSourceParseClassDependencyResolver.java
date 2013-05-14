@@ -1,10 +1,10 @@
-package net.ayld.facade.resolver.impl;
+package net.ayld.facade.dependency.resolver.impl;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import net.ayld.facade.resolver.ClassDependencyResolver;
+import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
 import net.ayld.facade.util.Tokenizer;
 import net.ayld.facade.util.annotation.ThreadSafe;
 

@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.ayld.facade.resolver.ClassDependencyResolver;
+import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.Set;
 import java.util.jar.JarFile;
 
-import net.ayld.facade.resolver.DependencyBundleResolver;
+import net.ayld.facade.dependency.resolver.DependencyBundleResolver;
 import net.ayld.facade.util.Tokenizer;
 
 import org.junit.Test;

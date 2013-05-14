@@ -2,12 +2,12 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-public class Coffee {
+public class ValidCoffee {
 	
 	private final boolean sugar; // yes please
 	private final boolean cream;
 	
-	public Coffee(boolean cream, boolean sugar) {
+	public ValidCoffee(boolean cream, boolean sugar) {
 		this.cream = cream;
 		this.sugar = sugar;
 	}
