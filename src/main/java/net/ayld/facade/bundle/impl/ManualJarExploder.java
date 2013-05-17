@@ -39,7 +39,7 @@ public class ManualJarExploder implements JarExploder{
 	}
 	
 	@Override
-	public ExplodedJar explode(JarFile jar) throws IOException {
+	public ExplodedJar explode(JarFile jar) throws IOException {// XXX huge jumbo method
 		final String jarName = Tokenizer.delimiter(File.separator).tokenize(jar.getName()).lastToken();
 		final String jarPath = Joiner.on(File.separator).join(workDir, jarName);
 		
@@ -50,7 +50,6 @@ public class ManualJarExploder implements JarExploder{
 			final String entryFilename = Joiner.on(File.separator).join(jarDir.getAbsolutePath(), entry.getName());
 			
 			if (entry.isDirectory()) {
-				
 				final File dirEntry = new File(entryFilename);
 				
 				if (!dirEntry.exists() && !dirEntry.mkdirs()) {
@@ -58,7 +57,6 @@ public class ManualJarExploder implements JarExploder{
 				}
 			}
 			else {
-					
 				final File fileEntry = new File(entryFilename);
 				
 				if (!fileEntry.getParentFile().exists() && !fileEntry.getParentFile().mkdirs()) {

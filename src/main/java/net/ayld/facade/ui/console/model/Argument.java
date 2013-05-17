@@ -2,10 +2,10 @@ package net.ayld.facade.ui.console.model;
 
 public class Argument {
 	
-	private String arg;
+	private String name;
 
-	public Argument(String arg) {
-		this.arg = arg;
+	private Argument(String arg) {
+		this.name = arg;
 	}
 
 	public static Argument fromString(String arg) {
@@ -14,6 +14,6 @@ public class Argument {
 
 	@Override
 	public String toString() {
-		return arg;
+		return name;
 	}
 }
