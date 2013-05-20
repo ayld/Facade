@@ -1,5 +1,7 @@
 package net.ayld.facade.ui.console.model;
 
+import java.util.Objects;
+
 public class Argument {
 	
 	private String name;
@@ -15,5 +17,24 @@ public class Argument {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Argument)) {
+			return false;
+		}
+		
+		final Argument arg = (Argument) obj;
+		
+		return Objects.equals(arg.toString(), name);
 	}
 }
