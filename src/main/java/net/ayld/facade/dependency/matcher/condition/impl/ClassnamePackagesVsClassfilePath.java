@@ -22,7 +22,7 @@ public class ClassnamePackagesVsClassfilePath implements MatchingCondition{
 		
 		// FIXME this is incorrect as it would match
 		//
-        // com.something.Bad
+		// com.something.Bad
 		// to
 		// /home/user/extracted.jar/org/wrong/com/something/Bad.class
 		//
