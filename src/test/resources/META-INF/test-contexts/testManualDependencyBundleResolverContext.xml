@@ -12,7 +12,7 @@
 		<import resource="classpath:META-INF/common.xml" />
 		
 		<bean id="workDir" class="java.lang.String" factory-method="valueOf">
-			<constructor-arg value="/tmp" type="java.lang.Object"/>
+			<constructor-arg value="${jar.extraction.dir}" type="java.lang.Object"/>
 		</bean>
 		
 		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">

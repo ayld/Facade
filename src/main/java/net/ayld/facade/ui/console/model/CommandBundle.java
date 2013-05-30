@@ -11,9 +11,9 @@ import net.ayld.facade.ui.console.command.Command;
 public class CommandBundle {
 	
 	private final Command command;
-	private final Set<Argument> arguments;
+	private final Set<String> arguments;
 	
-	public CommandBundle(Command command, Set<Argument> arguments) {
+	public CommandBundle(Command command, Set<String> arguments) {
 		if (arguments == null) {
 			arguments = Collections.emptySet();
 		}
@@ -25,7 +25,7 @@ public class CommandBundle {
 		return command;
 	}
 
-	public Set<Argument> getArguments() {
+	public Set<String> getArguments() {
 		return ImmutableSet.copyOf(arguments);
 	}
 

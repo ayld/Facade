@@ -5,11 +5,9 @@ import static junit.framework.Assert.assertTrue;
 import java.util.Collections;
 import java.util.Set;
 
-import junit.framework.Assert;
 import net.ayld.facade.ui.console.command.impl.GangnamCommand;
 import net.ayld.facade.ui.console.command.impl.StyleCommand;
 import net.ayld.facade.ui.console.command.resolver.CommandResolver;
-import net.ayld.facade.ui.console.model.Argument;
 import net.ayld.facade.ui.console.model.CommandBundle;
 
 import org.junit.Test;
@@ -41,22 +39,22 @@ public class TestSpringCommandResolver {
 		
 		assertTrue(resolved != null);
 		assertTrue(resolved.size() == 2);
-		assertTrue(resolved.contains(new CommandBundle(new GangnamCommand(), ImmutableSet.of(Argument.fromString("sexey")))));
-		assertTrue(resolved.contains(new CommandBundle(new StyleCommand(), Collections.<Argument>emptySet())));
+		assertTrue(resolved.contains(new CommandBundle(new GangnamCommand(), ImmutableSet.of("sexey"))));
+		assertTrue(resolved.contains(new CommandBundle(new StyleCommand(), Collections.<String>emptySet())));
 		
 		resolved = commandResolver.resolve("gangnam sexey leydey style");
 		
 		assertTrue(resolved != null);
 		assertTrue(resolved.size() == 2);
-		assertTrue(resolved.contains(new CommandBundle(new GangnamCommand(), ImmutableSet.of(Argument.fromString("sexey"), Argument.fromString("leydey")))));
-		assertTrue(resolved.contains(new CommandBundle(new StyleCommand(), Collections.<Argument>emptySet())));
+		assertTrue(resolved.contains(new CommandBundle(new GangnamCommand(), ImmutableSet.of("sexey", "leydey"))));
+		assertTrue(resolved.contains(new CommandBundle(new StyleCommand(), Collections.<String>emptySet())));
 		
 		resolved = commandResolver.resolve("style gangnam");
 		
 		assertTrue(resolved != null);
 		assertTrue(resolved.size() == 2);
-		assertTrue(resolved.contains(new CommandBundle(new GangnamCommand(), Collections.<Argument>emptySet())));
-		assertTrue(resolved.contains(new CommandBundle(new GangnamCommand(), Collections.<Argument>emptySet())));
+		assertTrue(resolved.contains(new CommandBundle(new GangnamCommand(), Collections.<String>emptySet())));
+		assertTrue(resolved.contains(new CommandBundle(new GangnamCommand(), Collections.<String>emptySet())));
 	}
 	
 	@Test
@@ -65,14 +63,5 @@ public class TestSpringCommandResolver {
 		
 		assertTrue(resolved != null);
 		assertTrue(resolved.size() == 0);
-		
-		try {
-			commandResolver.resolve("gangnam nonexistentArg");
-		} catch (IllegalArgumentException e) {
-			
-			//ok
-			return;
-		}
-		Assert.fail();
 	}
 }

@@ -13,6 +13,7 @@
        default-lazy-init="true">
 
 	<import resource="classpath:META-INF/components/service.xml" />
+	<import resource="classpath:META-INF/components/ui-console.xml" />
 
 	<context:annotation-config />
 	

@@ -7,5 +7,5 @@ import java.util.Set;
 
 public interface ClassDependencyResolver {
 	
-	public Set<String> resolve(File classFile) throws IOException;
+	public Set<String> resolve(File sourceFile) throws IOException;
 }

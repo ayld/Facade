@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.Set;
 
 import net.ayld.facade.ui.console.command.Command;
-import net.ayld.facade.ui.console.model.Argument;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -22,16 +21,11 @@ public abstract class AbstractCommand implements Command {
 	}
 	
 	@Override
-	public final void execute(Argument... args) {
-		for (Argument arg : args) {
-			if (!supportedArgumentNames.contains(arg.toString())) {
-				throw new IllegalArgumentException("argument " + arg + ", not supported");
-			}
-		}
+	public final void execute(String... args) {
 		internalExecute(args);
 	}
 	
-	protected abstract void internalExecute(Argument... args);
+	protected abstract void internalExecute(String... args);
 	
 	@Override
 	public Set<String> supportedNames() {
@@ -46,11 +40,6 @@ public abstract class AbstractCommand implements Command {
 	@Override
 	public boolean supportsName(String name) {
 		return supportedNames().contains(name);
-	}
-
-	@Override
-	public boolean supportsArgument(String arg) {
-		return supportedArguments().contains(arg);
 	}
 
 	@Override
