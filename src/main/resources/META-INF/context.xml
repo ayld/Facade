@@ -19,7 +19,7 @@
 	
 	<context:component-scan base-package="net.ayld"/>
 	
-	<bean id="commentaryUpdateTypeProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:config.properties"/>
 	</bean>
 	
