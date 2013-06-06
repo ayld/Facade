@@ -16,10 +16,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 @ThreadSafe
-public final class Files {
+public final class Files { // XXX copy code
+	
+	private static final String FILE_EXTENSION_DELIMITER = ".";
 	
 	private final File dir;
 	private boolean recursive = true;
+	private List<File> result = Lists.newLinkedList();
 
 	public Files(File dir) {
 		this.dir = dir;
@@ -35,12 +38,76 @@ public final class Files {
 		return new Files(directory);
 	}
 	
-	public void nonRecursive() {
+	public Files nonRecursive() {
 		this.recursive = false;
+		return this;
 	}
 	
-	public List<File> withExtention(String ext) throws IOException {
-		return recursive ? withExtensionRecursive(ext) : withExtensionNonRecursive(ext);
+	public List<File> list() {
+		return inclusive();
+	}
+	
+	public List<File> inclusive() {
+		return ImmutableList.copyOf(result);
+	}
+	
+	public Files named(String name) {
+		try {
+			
+			result.addAll(recursive ? namedRecursive(name) : namedNonRecursive(name));
+			
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return this;
+	}
+	
+	public Files withExtention(String ext) {
+		try {
+			
+			result.addAll(recursive ? withExtensionRecursive(ext) : withExtensionNonRecursive(ext));
+			
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return this;
+	}
+	
+	private List<File> namedNonRecursive(final String name) {
+		final File[] result = dir.listFiles(new FileFilter() {
+			
+			@Override
+			public boolean accept(File pathname) {
+				final String filename = Tokenizer.delimiter(File.separator).tokenize(pathname.getAbsolutePath()).lastToken();
+				final String filenameNoExtension = Tokenizer.delimiter(FILE_EXTENSION_DELIMITER).tokenize(filename).firstToken();
+				
+				if (filenameNoExtension.equalsIgnoreCase(name)) {
+					return true;
+				}
+				return false;
+			}
+		});
+		return ImmutableList.copyOf(result);
+	}
+	
+	private List<File> namedRecursive(final String name) throws IOException {
+		final List<File> result = Lists.newLinkedList();
+		
+		java.nio.file.Files.walkFileTree(Paths.get(dir.getAbsolutePath()), new SimpleFileVisitor<Path>() {
+
+			@Override
+			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+				final String filename = path.getFileName().toString();
+				final String filenameNoExtension = Tokenizer.delimiter(FILE_EXTENSION_DELIMITER).tokenize(filename).firstToken();
+				
+				if (filenameNoExtension.equalsIgnoreCase(name)) {
+					result.add(path.toFile());
+				}
+				
+				return FileVisitResult.CONTINUE;
+			}
+		});
+		return ImmutableList.copyOf(result);
 	}
 	
 	private List<File> withExtensionNonRecursive(final String ext) {
@@ -67,14 +134,13 @@ public final class Files {
 			@Override
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
 				
-				if (path.getFileName().endsWith(ext)) {
+				if (path.getFileName().toString().endsWith(ext)) {
 					result.add(path.toFile());
 				}
 				
 				return FileVisitResult.CONTINUE;
 			}
 		});
-		
 		return ImmutableList.copyOf(result);
 	}
 }
