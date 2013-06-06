@@ -57,32 +57,34 @@ public class TestFiles {
 	}
 	
 	@Test
-	public void withExtensionNonRecursive() {
-		final List<File> found = Files.in(workDir).nonRecursive().withExtention(JAVA_CLASS_FILE_EXTENSION).list();
+	public void withExtensionNonRecursive() throws IOException {
+		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).list();
+		
+		System.out.println(found);
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertTrue(found.size() == 3);
 	}
 	
 	@Test
-	public void withExtensionRecursive() {
-		final List<File> found = Files.in(workDir).withExtention(JAVA_CLASS_FILE_EXTENSION).list();
+	public void withExtensionRecursive() throws IOException {
+		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).list();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertTrue(found.size() == 6);
 	}
 	
 	@Test
-	public void inclusiveRecursive() {
-		final List<File> found = Files.in(workDir).withExtention(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
+	public void inclusiveRecursive() throws IOException {
+		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertTrue(found.size() == 8);
 	}
 	
 	@Test
-	public void inclusiveNonRecursive() {
-		final List<File> found = Files.in(workDir).nonRecursive().withExtention(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
+	public void inclusiveNonRecursive() throws IOException {
+		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
 
 		assertTrue(found != null && !found.isEmpty());
 		assertTrue(found.size() == 4);

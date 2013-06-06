@@ -1,13 +1,14 @@
 package net.ayld.facade.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
 import java.util.List;
 
 import net.ayld.facade.util.annotation.ThreadSafe;
@@ -15,8 +16,57 @@ import net.ayld.facade.util.annotation.ThreadSafe;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+/** 
+ * OK since I'm currently too lazy to properly document this class I'm just going to give usage examples.
+ * 
+ * Given the following file system tree:
+ * 
+ *  /root
+ *    - anExe.exe
+ *    - aDll.dll
+ *    - another.dll
+ *    /sub
+ *      - subExe.exe
+ *      - anExe.exe
+ *      - subDll.dll
+ *      
+ *  All {@link Files} methods are recursive by default.
+ *  To make them non-recursive just call {@link Files#nonRecursive()} anywhere, like so:
+ *  
+ *      Files.in("/root").withExtention("dll").nonRecursuve().list();
+ *      
+ *  So to:
+ *  
+ *  - list all DLLs in the /root folder recursively:
+ *  
+ *      <code>Files.in("/root").withExtention("dll").list();</code>
+ *      
+ *      Returns: ["/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]
+ *      
+ *  - list all files named 'anExe' in the /root folder recursively:
+ *  
+ *      <code>Files.in("/root").named("anExe").list();</code>
+ *      
+ *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe"]
+ *      
+ *  - to list all DLLs in /root and all files named 'anExe'
+ *  
+ *      <code>Files.in("/root").withExtention("dll").named("anExe").inclusive();</code>
+ *      
+ *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe", "/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]
+ *      
+ *  - to list all files in /root which are named 'subExe' and have the exe extension:
+ *      
+ *      <code>Files.in("/root").withExtention("exe").named("subExe").exclusive();</code>
+ *      
+ *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe"]
+ *      
+ *      
+ *  This should be enough for you :)
+ *  
+ * */
 @ThreadSafe
-public final class Files { // XXX copy code
+public final class Files {
 	
 	private static final String FILE_EXTENSION_DELIMITER = ".";
 	
@@ -51,49 +101,12 @@ public final class Files { // XXX copy code
 		return ImmutableList.copyOf(result);
 	}
 	
-	public Files named(String name) {
-		try {
-			
-			result.addAll(recursive ? namedRecursive(name) : namedNonRecursive(name));
-			
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return this;
-	}
-	
-	public Files withExtention(String ext) {
-		try {
-			
-			result.addAll(recursive ? withExtensionRecursive(ext) : withExtensionNonRecursive(ext));
-			
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		return this;
-	}
-	
-	private List<File> namedNonRecursive(final String name) {
-		final File[] result = dir.listFiles(new FileFilter() {
-			
-			@Override
-			public boolean accept(File pathname) {
-				final String filename = Tokenizer.delimiter(File.separator).tokenize(pathname.getAbsolutePath()).lastToken();
-				final String filenameNoExtension = Tokenizer.delimiter(FILE_EXTENSION_DELIMITER).tokenize(filename).firstToken();
-				
-				if (filenameNoExtension.equalsIgnoreCase(name)) {
-					return true;
-				}
-				return false;
-			}
-		});
-		return ImmutableList.copyOf(result);
-	}
-	
-	private List<File> namedRecursive(final String name) throws IOException {
+	public Files named(final String name) throws IOException {
 		final List<File> result = Lists.newLinkedList();
 		
-		java.nio.file.Files.walkFileTree(Paths.get(dir.getAbsolutePath()), new SimpleFileVisitor<Path>() {
+		final int recursionDepth = recursive ? Integer.MAX_VALUE : 1;
+		
+		java.nio.file.Files.walkFileTree(Paths.get(dir.getAbsolutePath()), Collections.<FileVisitOption>emptySet(), recursionDepth, new SimpleFileVisitor<Path>() {
 
 			@Override
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
@@ -107,29 +120,17 @@ public final class Files { // XXX copy code
 				return FileVisitResult.CONTINUE;
 			}
 		});
-		return ImmutableList.copyOf(result);
+		this.result.addAll(ImmutableList.copyOf(result));
+		
+		return this;
 	}
 	
-	private List<File> withExtensionNonRecursive(final String ext) {
-		final File[] result = dir.listFiles(new FileFilter() {
-			
-			@Override
-			public boolean accept(File pathname) {
-				final String filename = Tokenizer.delimiter(File.separator).tokenize(pathname.getAbsolutePath()).lastToken();
-				
-				if (filename.endsWith(ext)) {
-					return true;
-				}
-				return false;
-			}
-		});
-		return ImmutableList.copyOf(result);
-	}
-	
-	private List<File> withExtensionRecursive(final String ext) throws IOException {
+	public Files withExtension(final String ext) throws IOException {
 		final List<File> result = Lists.newLinkedList();
 		
-		java.nio.file.Files.walkFileTree(Paths.get(dir.getAbsolutePath()), new SimpleFileVisitor<Path>() {
+		final int recursionDepth = recursive ? Integer.MAX_VALUE : 1;
+		
+		java.nio.file.Files.walkFileTree(Paths.get(dir.getAbsolutePath()), Collections.<FileVisitOption>emptySet(), recursionDepth, new SimpleFileVisitor<Path>() {
 
 			@Override
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
@@ -141,6 +142,8 @@ public final class Files { // XXX copy code
 				return FileVisitResult.CONTINUE;
 			}
 		});
-		return ImmutableList.copyOf(result);
+		this.result.addAll(ImmutableList.copyOf(result));
+		
+		return this;
 	}
 }
