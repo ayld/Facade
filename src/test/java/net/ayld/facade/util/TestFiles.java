@@ -90,6 +90,22 @@ public class TestFiles {
 		assertTrue(found.size() == 4);
 	}
 	
+	@Test
+	public void exclusiveRecursive() throws IOException {
+		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
+		
+		assertTrue(found != null && !found.isEmpty());
+		assertTrue(found.size() == 2);
+	}
+	
+	@Test
+	public void exclusiveNonRecursive() throws IOException {
+		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
+		
+		assertTrue(found != null && !found.isEmpty());
+		assertTrue(found.size() == 1);
+	}
+	
 	private static void delete(File file) throws IOException {
 		if (file == null || !file.exists()) {
 			return;

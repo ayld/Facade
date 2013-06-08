@@ -9,15 +9,17 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-import net.ayld.facade.util.annotation.ThreadSafe;
+import net.ayld.facade.util.annotation.NotThreadSafe;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /** 
- * OK since I'm currently too lazy to properly document this class I'm just going to give usage examples.
+ * OK since I'm currently too lazy to properly document this class, so I'm just going to give usage examples.
  * 
  * Given the following file system tree:
  * 
@@ -65,14 +67,17 @@ import com.google.common.collect.Lists;
  *  This should be enough for you :)
  *  
  * */
-@ThreadSafe
-public final class Files {
+@NotThreadSafe
+public final class Files { // XXX this is actually rather procedural ...
 	
 	private static final String FILE_EXTENSION_DELIMITER = ".";
 	
 	private final File dir;
 	private boolean recursive = true;
 	private List<File> result = Lists.newLinkedList();
+	
+	private String requiredName;
+	private String requiredExtension;
 
 	public Files(File dir) {
 		this.dir = dir;
@@ -97,11 +102,47 @@ public final class Files {
 		return inclusive();
 	}
 	
+	public List<File> exclusive() {
+		final Iterator<File> resultIter = result.iterator();
+		
+		if (!Strings.isNullOrEmpty(requiredName)) {
+			
+			while (resultIter.hasNext()) {
+				final File file = resultIter.next();
+				final String name = file.getName();
+				final String nameNoExtension = Tokenizer.delimiter(FILE_EXTENSION_DELIMITER)
+						                                .tokenize(name)
+						                                .firstToken();
+				
+				if (!nameNoExtension.equalsIgnoreCase(requiredName)) {
+					resultIter.remove();
+				}
+			}
+		}
+		if (!Strings.isNullOrEmpty(requiredExtension)) {
+			
+			while (resultIter.hasNext()) {
+				final File file = resultIter.next();
+				
+				final String extension = Tokenizer.delimiter(FILE_EXTENSION_DELIMITER)
+						.tokenize(file.getAbsolutePath())
+						.lastToken();
+				
+				if (!extension.equalsIgnoreCase(requiredExtension)) {
+					resultIter.remove();
+				}
+			}
+		}
+		return ImmutableList.copyOf(result);
+	}
+	
 	public List<File> inclusive() {
 		return ImmutableList.copyOf(result);
 	}
 	
 	public Files named(final String name) throws IOException {
+		requiredName = name;
+		
 		final List<File> result = Lists.newLinkedList();
 		
 		final int recursionDepth = recursive ? Integer.MAX_VALUE : 1;
@@ -126,6 +167,8 @@ public final class Files {
 	}
 	
 	public Files withExtension(final String ext) throws IOException {
+		requiredExtension = ext;
+		
 		final List<File> result = Lists.newLinkedList();
 		
 		final int recursionDepth = recursive ? Integer.MAX_VALUE : 1;
