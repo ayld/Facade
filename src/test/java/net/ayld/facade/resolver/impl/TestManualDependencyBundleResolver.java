@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.jar.JarFile;
 
 import net.ayld.facade.dependency.resolver.DependencyBundleResolver;
+import net.ayld.facade.model.ClassName;
 import net.ayld.facade.util.Tokenizer;
 
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class TestManualDependencyBundleResolver {
 			bundles.add(new JarFile(new File(bundleUrl.toURI())));
 		}
 		
-		final Set<JarFile> jarsContainingClass = bundleResolver.resolve("org.primefaces.context.PrimePartialViewContext", bundles);
+		final Set<JarFile> jarsContainingClass = bundleResolver.resolve(new ClassName("org.primefaces.context.PrimePartialViewContext"), bundles);
 		
 		assertTrue(jarsContainingClass.size() > 0);
 		assertTrue(jarsContainingClass.iterator().next().getName().endsWith("primefaces-3.5.jar"));

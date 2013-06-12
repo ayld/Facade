@@ -70,7 +70,6 @@ public class ManualJarExploder implements JarExploder{
 	}
 
 	private static void explode(JarFile source, JarEntry content, File destination) throws IOException, FileNotFoundException {
-		// I really hate java's streams ... really ...
 		InputStream jarInputStream = null;
 		FileOutputStream classOutputStream = null;
 		try {

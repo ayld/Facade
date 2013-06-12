@@ -10,6 +10,7 @@ import java.util.jar.JarFile;
 
 import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
 import net.ayld.facade.dependency.resolver.DependencyBundleResolver;
+import net.ayld.facade.model.ClassName;
 import net.ayld.facade.ui.console.command.Command;
 import net.ayld.facade.util.annotation.NotThreadSafe;
 
@@ -50,7 +51,7 @@ public class Optimize extends AbstractCommand implements Command{
 		for (String dependency : sourceDependencies) {
 			try {
 				
-				final Set<JarFile> resolved = bundleResolver.resolve(dependency, findBundles(libDir));
+				final Set<JarFile> resolved = bundleResolver.resolve(new ClassName(dependency), findBundles(libDir));
 				dependenciesToBundles.put(dependency, resolved);
 				
 			} catch (IOException e) {
