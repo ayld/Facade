@@ -79,7 +79,7 @@ public final class Files { // XXX this is actually rather procedural ...
 	private String requiredName;
 	private String requiredExtension;
 
-	public Files(File dir) {
+	private Files(File dir) {
 		this.dir = dir;
 	}
 
