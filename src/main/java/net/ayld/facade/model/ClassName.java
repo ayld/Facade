@@ -4,6 +4,12 @@ import java.util.regex.Pattern;
 
 import net.ayld.facade.util.Tokenizer;
 
+/** 
+ * Meant to represent a fully qualified class name.
+ * 
+ * The idea behind the class is to provide a model object that makes sure that a string is actually a class name and not 
+ * something else, so one doesn't need to check 'by hand' every time.
+ * */
 public final class ClassName {
 
 	/** 
@@ -18,6 +24,16 @@ public final class ClassName {
 	
 	private final String qualifiedClassName;
 
+	/** 
+	 * Creates a {@link ClassName}.
+	 * 
+	 * Doesn't allow nulls or empty strings.
+	 * Does everything it can to make sure that the argument is in fact a fully qualified class name and not something else.
+	 * 
+	 * @param qualifiedClassName a class name
+	 * 
+	 * @return a new {@link ClassName}
+	 * */
 	public ClassName(String qualifiedClassName) {
 		if (!isClassName(qualifiedClassName)) {
 			throw new IllegalArgumentException("invalid fully qualified class name: " + qualifiedClassName + ", expected: " + CLASS_NAME_VALIDATION_REGEX);
@@ -29,10 +45,29 @@ public final class ClassName {
 		return Pattern.matches(CLASS_NAME_VALIDATION_REGEX, qualifiedClassName);
 	}
 
+	/** 
+	 * Returns the short name of the wrapped qualified class name.
+	 * 
+	 * In other words for this:
+	 *   
+	 *   <code>net.ayld.facade.model.ClassName</code>
+	 * 
+	 * this method will return:
+	 * 
+	 *   <code>ClassName</code>
+	 *   
+	 *   
+	 * @return the short name of the wrapped qualified class name
+	 * */
 	public String shortName() {
 		return Tokenizer.delimiter(".").tokenize(qualifiedClassName).lastToken();
 	}
 	
+	/** 
+	 * Returns the wrapped qualifiedClassName.
+	 * 
+	 * @return the wrapped qualifiedClassName
+	 * */
 	@Override
 	public String toString() {
 		return qualifiedClassName;

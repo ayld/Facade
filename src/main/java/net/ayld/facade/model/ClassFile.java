@@ -12,6 +12,15 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
+/** 
+ * Meant to represent a compiled .class file on the file system.
+ * 
+ * This class tries to do everything it can to make sure it wraps a file that is actually a Java .class file.
+ * It does this by reading the .class file bytes and checking whether they match the JVM .class file specifications.
+ * 
+ * More info here:
+ *   http://en.wikipedia.org/wiki/Java_class_file
+ * */
 public class ClassFile { // XXX magic numbers
 	
 	private static final String JAVA_CLASSFILE_EXTENTION = "class";
@@ -29,16 +38,26 @@ public class ClassFile { // XXX magic numbers
 	private ClassFile(File classfile) { // XXX copy code
 		try {
 			if (!isClassfile(classfile)) {
-				throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or file at path is not a class file");
+				throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file");
 			}
 			
 			this.classFile = classfile;
 			
 		} catch (URISyntaxException | IOException e) {
-			throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or file at path is not a class file", e);
+			throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file", e);
 		}
 	}
 	
+	/** 
+	 * Creates a {@link ClassFile} from a file on the classpath rather than the file system.
+	 * Checks whether the given file is actually a class file.
+	 * 
+	 * @param classpath path to the .class resource
+	 * 
+	 * @return a new {@link ClassFile}
+	 * 
+	 * @throws IllegalArgumentException if the file is not found or the file is not a class file
+	 * */
 	public static ClassFile fromClasspath(String path) {
 		try {
 			
@@ -49,10 +68,27 @@ public class ClassFile { // XXX magic numbers
 		}
 	}
 	
+	/** 
+	 * Creates a {@link ClassFile} from a {@link File}, checking whether the given file is actually a class file.
+	 * 
+	 * @param path path to a .class file on the file system
+	 * 
+	 * @return a new {@link ClassFile}
+	 * 
+	 * @throws IllegalArgumentException if the file is not found or the file is not a class file
+	 * */
 	public static ClassFile fromFilepath(String path) {
 		return new ClassFile(new File(path));
 	}
 	
+	/** 
+	 * Checks whether a file is a class file.
+	 * 
+	 * @param classfile a file on the file system
+	 * 
+	 * @return true if the given file is a Java class file,
+	 *         false if not
+	 * */
 	public static boolean isClassfile(File classfile) throws URISyntaxException, IOException { // moar checks can be done ... not that they would matter ...
 		if (!classfile.exists()) {
 			return false;
@@ -93,10 +129,18 @@ public class ClassFile { // XXX magic numbers
 		return true;
 	}
 
+	/** 
+	 * Returns the wrapped class file as a {@link File}.
+	 * 
+	 * @return the wrapped class file as a {@link File}.
+	 * */
 	public File physicalFile() {
 		return new File(classFile.getAbsolutePath());
 	}
 
+	/** 
+	 * Returns the path to the wrapped {@link File}.
+	 * */
 	@Override
 	public String toString() {
 		return classFile.getAbsolutePath();

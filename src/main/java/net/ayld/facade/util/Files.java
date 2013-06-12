@@ -19,7 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 /** 
- * OK since I'm currently too lazy to properly document this class, so I'm just going to give usage examples.
+ * OK since I'm currently too lazy to properly document this class, I'm just going to give usage examples.
  * 
  * Given the following file system tree:
  * 
