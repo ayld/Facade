@@ -102,6 +102,18 @@ public final class Files { // XXX this is actually rather procedural ...
 		return inclusive();
 	}
 	
+	public File single() {
+		result = exclusive();
+		
+		if (result.isEmpty()) {
+			throw new IllegalStateException("no files with name: " + requiredName + " and extension: " + requiredExtension + " found in " + dir.getAbsolutePath());
+		}
+		if (result.size() > 1) {
+			throw new IllegalStateException("can not return singular file with given query, currently found: " + result);
+		}
+		return result.iterator().next();
+	}
+	
 	public List<File> exclusive() {
 		final Iterator<File> resultIter = result.iterator();
 		
@@ -137,6 +149,29 @@ public final class Files { // XXX this is actually rather procedural ...
 	}
 	
 	public List<File> inclusive() {
+		return ImmutableList.copyOf(result);
+	}
+	
+	public List<File> all() throws IOException {
+		if (!Strings.isNullOrEmpty(requiredName) || !Strings.isNullOrEmpty(requiredExtension)) {
+			return inclusive();
+		}
+		
+		final int recursionDepth = recursive ? Integer.MAX_VALUE : 1;
+		
+		java.nio.file.Files.walkFileTree(Paths.get(dir.getAbsolutePath()), Collections.<FileVisitOption>emptySet(), recursionDepth, new SimpleFileVisitor<Path>() {
+
+			@Override
+			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+				final File file = path.toFile();
+				
+				if (file.isFile()) {
+					result.add(file);
+				}
+				
+				return FileVisitResult.CONTINUE;
+			}
+		});
 		return ImmutableList.copyOf(result);
 	}
 	

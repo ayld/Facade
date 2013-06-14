@@ -106,6 +106,29 @@ public class TestFiles {
 		assertTrue(found.size() == 1);
 	}
 	
+	@Test
+	public void all() throws IOException {
+		final List<File> found = Files.in(workDir).all();
+		
+		assertTrue(found != null && !found.isEmpty());
+		assertTrue(found.size() == 8);
+	}
+	
+	@Test
+	public void allNonRecursive() throws IOException {
+		final List<File> found = Files.in(workDir).nonRecursive().all();
+		
+		assertTrue(found != null && !found.isEmpty());
+		assertTrue(found.size() == 4);
+	}
+	
+	@Test
+	public void single() throws IOException {
+		final File found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").single();
+		
+		assertTrue(found != null);
+	}
+	
 	private static void delete(File file) throws IOException {
 		if (file == null || !file.exists()) {
 			return;

@@ -17,6 +17,7 @@ public class ManualJarMaker implements JarMaker{
 	
 	@Override
 	public JarFile zip(Set<File> classFiles) throws IOException {
+		makeOutputDir();
 		
 		final JarOutputStream jarOut = new JarOutputStream(new FileOutputStream(new File(facadeJarName)));
 		for (File classFile : classFiles) {
@@ -37,6 +38,11 @@ public class ManualJarMaker implements JarMaker{
 		jarOut.close();
 		
 		return new JarFile(facadeJarName);
+	}
+
+	private void makeOutputDir() {
+		// ignoring result because it is ok for the parent to exist
+		new File(new File(facadeJarName).getParent()).mkdirs();
 	}
 
 	public void setZippedJarName(String zippedJarName) {

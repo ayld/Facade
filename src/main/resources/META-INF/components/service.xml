@@ -15,6 +15,10 @@
 			<property name="workDir" value="${jar.extraction.dir}"/>
 		</bean>
 		
+		<bean id="jarMaker" class="net.ayld.facade.bundle.impl.ManualJarMaker">
+			<property name="zippedJarName" value="${jar.facade.name}"/>
+		</bean>
+		
 		<bean id="bundleResolver" class="net.ayld.facade.dependency.resolver.impl.ManualDependencyBundleResolver">
 			<property name="jarExploder" ref="jarExploder"/>
 			<property name="dependencyMatcher">
