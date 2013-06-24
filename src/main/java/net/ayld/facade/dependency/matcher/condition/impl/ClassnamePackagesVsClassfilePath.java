@@ -26,6 +26,6 @@ public class ClassnamePackagesVsClassfilePath implements MatchingCondition{
 		// to
 		// /home/user/extracted.jar/org/wrong/com/something/Bad.class
 		//
-		return classfileFullPath.replaceAll(File.separator, "").contains(classPackages);
+		return classfileFullPath.replaceAll("\\" + File.separator, "").contains(classPackages);
 	}
 }
