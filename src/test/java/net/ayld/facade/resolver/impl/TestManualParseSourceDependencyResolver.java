@@ -7,7 +7,8 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
+import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
+import net.ayld.facade.model.ClassName;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,16 +18,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath:META-INF/test-contexts/testManualSourceParseClassDependencyResolverContext.xml"})
-public class TestManualSourceParseClassDependencyResolver {
+@ContextConfiguration({"classpath:META-INF/test-contexts/testManualParseSourceDependencyResolverContext.xml"})
+public class TestManualParseSourceDependencyResolver {
 	
 	private static final String JAVA_IMPORT_KEYWOD = "import";
 	
 	@Autowired
-	private ClassDependencyResolver classDependencyResolver;
+	private SourceDependencyResolver sourceDependencyResolver;
 	
 	@Test
 	public void testResolve() throws IOException, URISyntaxException {
@@ -46,18 +48,18 @@ public class TestManualSourceParseClassDependencyResolver {
 		}
 		
 		// get dependencies through the resolver
-		final Set<String> resolvedDependencies = classDependencyResolver.resolve(new File(validSourceUrl.toURI()));
+		final Set<ClassName> resolvedDependencies = sourceDependencyResolver.resolve(new File(validSourceUrl.toURI()));
 		
 		// result sets should match
-		Assert.assertEquals(dependencies, resolvedDependencies);
+		Assert.assertEquals(dependencies, toStringSet(resolvedDependencies));
 	}
 	
 	@Test
 	public void testValidate() throws URISyntaxException, IOException{
-		final URL validSourceUrl = Resources.getResource("test-classes/InvalidCoffee.java");
+		final URL invalidSourceUrl = Resources.getResource("test-classes/InvalidCoffee.java");
 		
 		try {
-			classDependencyResolver.resolve(new File(validSourceUrl.toURI())); // should blow up
+			sourceDependencyResolver.resolve(new File(invalidSourceUrl.toURI())); // should blow up
 		} catch (IllegalArgumentException e) {
 			
 			// party :)
@@ -65,5 +67,15 @@ public class TestManualSourceParseClassDependencyResolver {
 			return;
 		}
 		Assert.fail(); // no party :(
+	}
+	
+	private Set<String> toStringSet(Set<ClassName> toConvert) {
+		final Set<String> result = Sets.newHashSet();
+		
+		for (ClassName name : toConvert) {
+			result.add(name.toString());
+		}
+		
+		return result;
 	}
 }

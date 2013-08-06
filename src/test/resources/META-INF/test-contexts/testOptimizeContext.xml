@@ -26,7 +26,7 @@
 	    	<property name="jarMaker" ref="jarMaker"/>
 	    </bean>
 	    
-	    <bean id="dependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualSourceParseClassDependencyResolver"/>
+	    <bean id="dependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver"/>
 	    
 	    <bean id="bundleResolver" class="net.ayld.facade.dependency.resolver.impl.ManualDependencyBundleResolver">
 			<property name="jarExploder" ref="jarExploder"/>

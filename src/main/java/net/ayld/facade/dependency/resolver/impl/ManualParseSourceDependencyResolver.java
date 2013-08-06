@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
-import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
+import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
+import net.ayld.facade.model.ClassName;
 import net.ayld.facade.util.Tokenizer;
 import net.ayld.facade.util.annotation.ThreadSafe;
 
@@ -15,7 +16,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 
 @ThreadSafe
-public class ManualSourceParseClassDependencyResolver implements ClassDependencyResolver{
+public class ManualParseSourceDependencyResolver implements SourceDependencyResolver{
 
 	private static final String JAVA_SOURCE_FILE_EXTENTION = "java";
 	private static final String JAVA_PACKAGE_KEYWORD = "package";
@@ -24,7 +25,7 @@ public class ManualSourceParseClassDependencyResolver implements ClassDependency
 	private static Set<String> VALID_SOURCE_FILE_FIRST_WORDS = ImmutableSet.of(JAVA_IMPORT_KEYWOD, JAVA_PACKAGE_KEYWORD);
 	
 	@Override
-	public Set<String> resolve(File sourceFile) throws IOException {
+	public Set<ClassName> resolve(File sourceFile) throws IOException {
 		if (!isSourceFile(sourceFile)) {
 			throw new IllegalArgumentException("source file: " + sourceFile + ", is not a Java source file or does not exist");
 		}
@@ -32,13 +33,13 @@ public class ManualSourceParseClassDependencyResolver implements ClassDependency
 		final String sourceFileContent = Resources.toString(sourceFile.toURI().toURL(), Charsets.UTF_8);
 		
 		// we can somehow select only lines starting with import so we don't need to iterate over every single line
-		final Set<String> result = Sets.newHashSet();
+		final Set<ClassName> result = Sets.newHashSet();
 		for (String line : Splitter.on("\n").split(sourceFileContent)) {
 			
 			if (line.startsWith(JAVA_IMPORT_KEYWOD)) {
 				
 				final String dependency = Tokenizer.delimiter(" ").tokenize(line).lastToken().replaceAll(";", "");
-				result.add(dependency);
+				result.add(new ClassName(dependency));
 			}
 		}
 		return ImmutableSet.copyOf(result);

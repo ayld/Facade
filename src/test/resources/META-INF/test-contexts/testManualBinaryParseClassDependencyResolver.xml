@@ -11,6 +11,6 @@
 		
 		
 		
-		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualSourceParseClassDependencyResolver"/>
+		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver"/>
 		
 </beans>

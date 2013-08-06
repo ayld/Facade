@@ -2,24 +2,23 @@ package net.ayld.facade.ui.console.command.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarFile;
 
 import net.ayld.facade.bundle.JarExploder;
 import net.ayld.facade.bundle.JarMaker;
-import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
 import net.ayld.facade.dependency.resolver.DependencyBundleResolver;
+import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.ExplodedJar;
 import net.ayld.facade.ui.console.command.Command;
 import net.ayld.facade.util.Files;
+import net.ayld.facade.util.Tokenizer;
 import net.ayld.facade.util.annotation.NotThreadSafe;
 
 import org.springframework.beans.factory.annotation.Required;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.MapMaker;
 import com.google.common.collect.Sets;
@@ -33,7 +32,7 @@ public class Optimize extends AbstractCommand implements Command{
 	private static final String JAR_BUNDLE_EXTENTION = "jar";
 	
 	private DependencyBundleResolver bundleResolver;
-	private ClassDependencyResolver dependencyResolver;
+	private SourceDependencyResolver dependencyResolver;
 	
 	private JarExploder jarExploader;
 	private JarMaker jarMaker;
@@ -72,17 +71,23 @@ public class Optimize extends AbstractCommand implements Command{
 			}
 		}
 		
-		final Set<File> dependenciesToPackage = Sets.newHashSet();
+		final Set<File> dependenciesForPackaging = Sets.newHashSet();
 		for (String dependency : dependenciesToBundles.keySet()) {
 			
 			final Set<ExplodedJar> bundles = dependenciesToBundles.get(dependency);
 			for (ExplodedJar bundle : bundles) {
 				
-				final String dependencyFilename = Joiner.on(".").join(dependency, JAVA_CLASS_FILE_EXTENTION);
+				final String dependencyName = Tokenizer.delimiter(".").lastToken();
 				
 				try {
 					
-					dependenciesToPackage.add(Files.in(bundle.getExtractedPath()).named(dependencyFilename).single());
+					dependenciesForPackaging.add
+					(
+							Files.in(bundle.getExtractedPath())
+								 .named(dependencyName)
+								 .withExtension(JAVA_CLASS_FILE_EXTENTION)
+								 .single()
+					);
 					
 				} catch (IOException e) {
 					// XXX wrapping because otherwise I have to change super method signature
@@ -94,7 +99,7 @@ public class Optimize extends AbstractCommand implements Command{
 		
 		try {
 			
-			jarMaker.zip(dependenciesToPackage);
+			jarMaker.zip(dependenciesForPackaging);
 			
 		} catch (IOException e) {
 			// XXX wrapping because otherwise I have to change super method signature
@@ -120,12 +125,15 @@ public class Optimize extends AbstractCommand implements Command{
 	}
 	
 	private Set<String> findDependencies(String srcDir) {
-		Set<String> result = Collections.emptySet();
+		Set<String> result = Sets.newHashSet();
 		try {
 			for (File source : Files.in(srcDir).withExtension(JAVA_SOURCE_FILE_EXTENTION).list()) {
 					
-				result = dependencyResolver.resolve(source);
-					
+				final Set<ClassName> resolvedDependencies = dependencyResolver.resolve(source);
+				
+				for (ClassName dependency : resolvedDependencies) {
+					result.add(dependency.toString());
+				}
 			}
 		} catch (IOException e) {
 			// XXX wrapping because otherwise I have to change super method signature
@@ -169,7 +177,7 @@ public class Optimize extends AbstractCommand implements Command{
 	}
 
 	@Required
-	public void setDependencyResolver(ClassDependencyResolver dependencyResolver) {
+	public void setDependencyResolver(SourceDependencyResolver dependencyResolver) {
 		this.dependencyResolver = dependencyResolver;
 	}
 }
