@@ -3,6 +3,11 @@ package net.ayld.facade.model;
 import java.io.File;
 import java.util.jar.JarFile;
 
+import com.google.common.hash.Funnel;
+import com.google.common.hash.HashFunction;
+import com.google.common.hash.Hashing;
+import com.google.common.hash.PrimitiveSink;
+
 /** 
  * Represents an extracted (exploded) .jar file.
  * */
@@ -31,5 +36,42 @@ public class ExplodedJar {
 
 	public String getExtractedPath() {
 		return extractedPath;
+	}
+
+	@Override
+	public int hashCode() {
+		final HashFunction hf = Hashing.md5();
+		
+		return hf.newHasher()
+				.putString(extractedPath)
+				.putObject(archive, new Funnel<JarFile>() {
+
+					@Override
+					public void funnel(JarFile from, PrimitiveSink into) {
+						into
+							.putString(from.getName())
+							.putString(from.getComment());
+					}
+					private static final long serialVersionUID = 3109141395123855989L;
+
+		}).hash().asInt();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
+		if (!(obj instanceof ExplodedJar)) {
+			return false;
+		}
+		
+		final ExplodedJar other = (ExplodedJar) obj;
+		
+		return 
+				other.getArchive().equals(this.archive)
+				&& 
+				other.getExtractedPath().equals(this.extractedPath);
 	}
 }

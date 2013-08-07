@@ -72,4 +72,24 @@ public final class ClassName {
 	public String toString() {
 		return qualifiedClassName;
 	}
-}
+
+	@Override
+	public int hashCode() {
+		return qualifiedClassName.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
+		if (!(obj instanceof ClassName)) {
+			return false;
+		}
+		
+		final ClassName other = (ClassName) obj;
+		
+		return other.toString().equals(this.toString());
+	}
+}	

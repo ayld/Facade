@@ -145,4 +145,24 @@ public class ClassFile { // XXX magic numbers
 	public String toString() {
 		return classFile.getAbsolutePath();
 	}
+
+	@Override
+	public int hashCode() {
+		return classFile.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		
+		if (!(obj instanceof ClassFile)) {
+			return false;
+		}
+		
+		final ClassFile other = (ClassFile) obj;
+		
+		return other.physicalFile().equals(this.physicalFile());
+	}
 }

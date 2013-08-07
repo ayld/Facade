@@ -51,13 +51,17 @@ import com.google.common.collect.Lists;
  *      
  *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe"]
  *      
- *  - to list all DLLs in /root and all files named 'anExe'
+ *  - to list all DLLs in /root AND all files named 'anExe'
  *  
  *      <code>Files.in("/root").withExtention("dll").named("anExe").inclusive();</code>
  *      
  *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe", "/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]
  *      
- *  - to list all files in /root which are named 'subExe' and have the exe extension:
+ *      Note: <code>Files.in("/root").withExtention("dll").named("anExe").exclusive();</code>
+ *      
+ *      Will return nothing since there are no files named 'anExe' with a extension .dll
+ *      
+ *  - to list all files in /root which are named 'subExe' and have the .exe extension:
  *      
  *      <code>Files.in("/root").withExtention("exe").named("subExe").exclusive();</code>
  *      
