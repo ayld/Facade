@@ -3,6 +3,8 @@ package net.ayld.facade.model;
 import java.io.File;
 import java.util.jar.JarFile;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.hash.Funnel;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
@@ -17,6 +19,12 @@ public class ExplodedJar {
 	final JarFile archive;
 
 	public ExplodedJar(String extractedPath, JarFile archive) {
+		if (archive == null) {
+			throw new IllegalArgumentException("null archive");
+		}
+		if (Strings.isNullOrEmpty(extractedPath)) {
+			throw new IllegalArgumentException("extracted path is null or empty");
+		}
 		if (!isPath(extractedPath)) {
 			throw new IllegalArgumentException("Directory at: " + extractedPath + ", does not exist or is not a directory");
 		}
@@ -50,7 +58,7 @@ public class ExplodedJar {
 					public void funnel(JarFile from, PrimitiveSink into) {
 						into
 							.putString(from.getName())
-							.putString(from.getComment());
+							.putString(Optional.fromNullable(from.getComment()).or(""));
 					}
 					private static final long serialVersionUID = 3109141395123855989L;
 

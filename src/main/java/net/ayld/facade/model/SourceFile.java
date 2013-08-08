@@ -49,6 +49,13 @@ public class SourceFile {
 		}
 	}
 	
+	public static SourceFile fromFile(File file) {
+		if (file == null) {
+			throw new IllegalArgumentException("can't create a SourceFile from a null file");
+		}
+		return fromFilepath(file.getAbsolutePath());
+	}
+	
 	public File physicalFile() {
 		return new File(source.getAbsolutePath());
 	}
