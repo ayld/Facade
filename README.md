@@ -1,5 +1,5 @@
 Facade
 ======
 
-Facade tries to create a facade jar in front of all the jars used by your project.
-The facade jar should contain only classes your project actually uses, nothing else.
+Facade tries to create a jar in from all of the jars used by a project.
+The facade jar should contain only classes the project actually uses, nothing else.
