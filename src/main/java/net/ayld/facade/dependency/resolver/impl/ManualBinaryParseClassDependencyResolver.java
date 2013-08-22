@@ -32,6 +32,17 @@ public class ManualBinaryParseClassDependencyResolver implements ClassDependency
 		return dependencyVisitor.getFoundDependencies();
 	}
 	
+	@Override
+	public Set<ClassName> resolve(Set<ClassFile> classFiles) throws IOException {
+		final Set<ClassName> result = Sets.newHashSet();
+		
+		for (ClassFile classFile : classFiles) {
+			result.addAll(resolve(classFile));
+		}
+		
+		return result;
+	}
+
 	private static class DependencyVisitor extends EmptyVisitor {
 
 		private final JavaClass javaClass;

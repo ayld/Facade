@@ -1,11 +1,11 @@
 package net.ayld.facade.dependency.resolver.impl;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
 import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
 import net.ayld.facade.model.ClassName;
+import net.ayld.facade.model.SourceFile;
 import net.ayld.facade.util.Tokenizer;
 import net.ayld.facade.util.annotation.ThreadSafe;
 
@@ -18,54 +18,33 @@ import com.google.common.io.Resources;
 @ThreadSafe
 public class ManualParseSourceDependencyResolver implements SourceDependencyResolver{
 
-	private static final String JAVA_SOURCE_FILE_EXTENTION = "java";
-	private static final String JAVA_PACKAGE_KEYWORD = "package";
-	private static final String JAVA_IMPORT_KEYWOD = "import";
-	
-	private static Set<String> VALID_SOURCE_FILE_FIRST_WORDS = ImmutableSet.of(JAVA_IMPORT_KEYWOD, JAVA_PACKAGE_KEYWORD);
-	
 	@Override
-	public Set<ClassName> resolve(File sourceFile) throws IOException {
-		if (!isSourceFile(sourceFile)) {
-			throw new IllegalArgumentException("source file: " + sourceFile + ", is not a Java source file or does not exist");
-		}
+	public Set<ClassName> resolve(SourceFile source) throws IOException {
 		
-		final String sourceFileContent = Resources.toString(sourceFile.toURI().toURL(), Charsets.UTF_8);
+		final String sourceFileContent = Resources.toString(source.physicalFile().toURI().toURL(), Charsets.UTF_8);
 		
 		// we can somehow select only lines starting with import so we don't need to iterate over every single line
 		final Set<ClassName> result = Sets.newHashSet();
 		for (String line : Splitter.on("\n").split(sourceFileContent)) {
 			
-			if (line.startsWith(JAVA_IMPORT_KEYWOD)) {
+			if (line.startsWith(SourceFile.IMPORT_KEYWOD)) {
 				
 				final String dependency = Tokenizer.delimiter(" ").tokenize(line).lastToken().replaceAll(";", "");
 				result.add(new ClassName(dependency));
 			}
 		}
+		
 		return ImmutableSet.copyOf(result);
 	}
-	
-	private static boolean isSourceFile(File sourceFile) throws IOException { // TODO moar checks needed this is not enough
-		if (sourceFile == null) {
-			return false;
+
+	@Override
+	public Set<ClassName> resolve(Set<SourceFile> sources) throws IOException {
+		final Set<ClassName> result = Sets.newHashSet();
+		
+		for (SourceFile source : sources) {
+			result.addAll(resolve(source));
 		}
 		
-		final String name = sourceFile.getName();
-		final String extention = Tokenizer.delimiter(".").tokenize(name).lastToken();
-		
-		if (!extention.equals(JAVA_SOURCE_FILE_EXTENTION)) {
-			return false;
-		}
-		
-		final String sourceFileContent = Resources.toString(sourceFile.toURI().toURL(), Charsets.UTF_8);
-		
-		final String firstLine = Tokenizer.delimiter("\n").tokenize(sourceFileContent).firstToken();
-		final String firstWord = Tokenizer.delimiter(" ").tokenize(firstLine).firstToken();
-		
-		if (!VALID_SOURCE_FILE_FIRST_WORDS.contains(firstWord)) {
-			return false;
-		}
-		
-		return true;
+		return result;
 	}
 }

@@ -9,6 +9,7 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
 		
+		
 		<bean id="sourceDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver"/>
 		
 </beans>

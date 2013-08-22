@@ -9,6 +9,7 @@ import java.util.Set;
 
 import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
 import net.ayld.facade.model.ClassName;
+import net.ayld.facade.model.SourceFile;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class TestManualParseSourceDependencyResolver {
 		}
 		
 		// get dependencies through the resolver
-		final Set<ClassName> resolvedDependencies = sourceDependencyResolver.resolve(new File(validSourceUrl.toURI()));
+		final Set<ClassName> resolvedDependencies = sourceDependencyResolver.resolve(SourceFile.fromFile(new File(validSourceUrl.toURI())));
 		
 		// result sets should match
 		Assert.assertEquals(dependencies, toStringSet(resolvedDependencies));
@@ -59,7 +60,7 @@ public class TestManualParseSourceDependencyResolver {
 		final URL invalidSourceUrl = Resources.getResource("test-classes/InvalidCoffee.java");
 		
 		try {
-			sourceDependencyResolver.resolve(new File(invalidSourceUrl.toURI())); // should blow up
+			sourceDependencyResolver.resolve(SourceFile.fromFile(new File(invalidSourceUrl.toURI()))); // should blow up
 		} catch (IllegalArgumentException e) {
 			
 			// party :)

@@ -5,15 +5,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
 /** 
- * Meant to represent a compiled .class file on the file system.
+ * Meant to represent a compiled binary .class file on the file system.
  * 
  * This class tries to do everything it can to make sure it wraps a file that is actually a Java .class file.
  * It does this by reading the .class file bytes and checking whether they match the JVM .class file specifications.
@@ -23,7 +23,7 @@ import com.google.common.io.Resources;
  * */
 public class ClassFile { // XXX magic numbers
 	
-	private static final String JAVA_CLASSFILE_EXTENTION = "class";
+	public static final String EXTENSION = "class";
 	
 	// bytes in a set :D
 	private static final Set<Byte> CAFEBABE = ImmutableSet.of(
@@ -34,6 +34,8 @@ public class ClassFile { // XXX magic numbers
 	);
 	
 	private final File classFile;
+	private final byte[] binary;
+	private final ClassName qualifiedName;
 
 	private ClassFile(File classfile) { // XXX copy code
 		try {
@@ -42,10 +44,29 @@ public class ClassFile { // XXX magic numbers
 			}
 			
 			this.classFile = classfile;
-			
+			this.binary = Files.readAllBytes(classFile.toPath());
+				
 		} catch (URISyntaxException | IOException e) {
 			throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file", e);
 		}
+		
+		this.qualifiedName = new ClassName(new ClassLoader() {
+			
+			public Class<?> defineClass(byte[] binary) {
+				return defineClass(null, binary, 0, binary.length);
+			}
+			
+		}.defineClass(binary).getName());
+	}
+	
+	
+	/** 
+	 * Returns the qualified class name of this ClassFile.
+	 * 
+	 * @see {@link ClassName}
+	 * */
+	public ClassName qualifiedName() {
+		return qualifiedName;
 	}
 	
 	/** 
@@ -81,6 +102,13 @@ public class ClassFile { // XXX magic numbers
 		return new ClassFile(new File(path));
 	}
 	
+	public static ClassFile fromFile(File classFile) {
+		if (classFile == null) {
+			throw new IllegalArgumentException("null argument not allowed");
+		}
+		return fromFilepath(classFile.getAbsolutePath());
+	}
+	
 	/** 
 	 * Checks whether a file is a class file.
 	 * 
@@ -94,16 +122,15 @@ public class ClassFile { // XXX magic numbers
 			return false;
 		}
 		
-		if (!JAVA_CLASSFILE_EXTENTION.equals(Files.getFileExtension(classfile.getName()))) {
+		if (!EXTENSION.equals(com.google.common.io.Files.getFileExtension(classfile.getName()))) {
 			return false;
 		}
 		
 		InputStream classfileInputStream = null;
-		byte[] firstFour = null;
+		final byte[] firstFour = new byte[4];
 		
 		try {
 			classfileInputStream = new FileInputStream(classfile);
-			firstFour = new byte[4];
 			
 			if (classfileInputStream.read(firstFour, 0, firstFour.length) != firstFour.length) {
 				return false;
@@ -146,6 +173,8 @@ public class ClassFile { // XXX magic numbers
 		return classFile.getAbsolutePath();
 	}
 
+	// TODO hashCode() and equals() must be improved reflecting new fields
+	
 	@Override
 	public int hashCode() {
 		return classFile.hashCode();

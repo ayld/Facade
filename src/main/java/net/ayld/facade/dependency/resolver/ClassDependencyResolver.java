@@ -12,4 +12,6 @@ import net.ayld.facade.model.ClassName;
 public interface ClassDependencyResolver {
 
 	public Set<ClassName> resolve(ClassFile classFile) throws IOException;
+	
+	public Set<ClassName> resolve(Set<ClassFile> classFiles) throws IOException;
 }

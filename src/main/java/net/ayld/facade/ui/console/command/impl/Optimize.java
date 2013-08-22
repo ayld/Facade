@@ -12,6 +12,7 @@ import net.ayld.facade.dependency.resolver.DependencyBundleResolver;
 import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.ExplodedJar;
+import net.ayld.facade.model.SourceFile;
 import net.ayld.facade.ui.console.command.Command;
 import net.ayld.facade.util.Files;
 import net.ayld.facade.util.Tokenizer;
@@ -48,13 +49,13 @@ public class Optimize extends AbstractCommand implements Command{
 		final String srcDir = args[0];
 		final String libDir = args[1];
 		
-		final Set<String> sourceDependencies = findDependencies(srcDir);
+		final Set<String> dependencies = findSourceDependencies(srcDir);
 		
 		final Map<String, Set<ExplodedJar>> dependenciesToBundles = new MapMaker()
-																	.initialCapacity(sourceDependencies.size())
+																	.initialCapacity(dependencies.size())
 																	.concurrencyLevel(1)
 																	.makeMap();
-		for (String dependency : sourceDependencies) {
+		for (String dependency : dependencies) {
 			try {
 				
 				final Set<JarFile> resolved = bundleResolver.resolve(new ClassName(dependency), findBundles(libDir));
@@ -63,7 +64,9 @@ public class Optimize extends AbstractCommand implements Command{
 					
 					resolvedExploded.add(jarExploader.explode(bundle));
 				}
+				
 				dependenciesToBundles.put(dependency, resolvedExploded);
+				
 			} catch (IOException e) {
 				// XXX wrapping because otherwise I have to change super method signature
 				//     further thought on whether this is correct is needed
@@ -124,12 +127,12 @@ public class Optimize extends AbstractCommand implements Command{
 		return result;
 	}
 	
-	private Set<String> findDependencies(String srcDir) {
+	private Set<String> findSourceDependencies(String srcDir) {
 		Set<String> result = Sets.newHashSet();
 		try {
 			for (File source : Files.in(srcDir).withExtension(JAVA_SOURCE_FILE_EXTENTION).list()) {
 					
-				final Set<ClassName> resolvedDependencies = dependencyResolver.resolve(source);
+				final Set<ClassName> resolvedDependencies = dependencyResolver.resolve(SourceFile.fromFilepath(source.getAbsolutePath()));
 				
 				for (ClassName dependency : resolvedDependencies) {
 					result.add(dependency.toString());

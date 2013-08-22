@@ -96,6 +96,10 @@ public class ManualJarExploder implements JarExploder{
 		
 		final File dir = new File(workDir);
 		
+		if (!dir.mkdirs()) {
+			// TODO log warning
+		}
+		
 		if (!dir.isDirectory()) {
 			throw new IllegalArgumentException("path " + workDir + ", is not a directory");
 		}

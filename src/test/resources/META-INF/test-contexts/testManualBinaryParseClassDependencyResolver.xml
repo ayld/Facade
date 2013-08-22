@@ -9,8 +9,6 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
 		
-		
-		
 		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver"/>
 		
 </beans>
