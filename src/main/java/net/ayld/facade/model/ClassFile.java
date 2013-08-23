@@ -44,7 +44,7 @@ public class ClassFile { // XXX magic numbers
 			}
 			this.classFile = classfile;
 			
-			this.qualifiedName = new ClassName(new ClassParser(classFile.toString()).parse().getClassName());
+			this.qualifiedName = new ClassName(new ClassParser(classFile.getAbsolutePath()).parse().getClassName());
 			
 		} catch (URISyntaxException | IOException e) {
 			throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file", e);
