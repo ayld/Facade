@@ -9,28 +9,37 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
 		
-		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver"/>
+		<bean id="workDir" class="java.lang.String" factory-method="valueOf">
+			<constructor-arg value="${jar.compaction.dir}" type="java.lang.Object"/>
+		</bean>
+		
+		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver"/>
+		<bean id="sourceDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver"/>
 		
 		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">
-			<property name="workDir" value="${jar.extraction.dir}"/>
+			<property name="workDir" value="#{workDir}"/>
 		</bean>
-		
 		<bean id="jarMaker" class="net.ayld.facade.bundle.impl.ManualJarMaker">
-			<property name="zippedJarName" value="${jar.facade.name}"/>
+			<property name="zippedJarName" value="#{workDir.concat('/facade.jar')}"/>
 		</bean>
 		
-		<bean id="bundleResolver" class="net.ayld.facade.dependency.resolver.impl.ManualDependencyBundleResolver">
-			<property name="jarExploder" ref="jarExploder"/>
-			<property name="dependencyMatcher">
+		<bean id="facadeApi" class="net.ayld.facade.api.impl.SpringFacadeApi">
+			<property name="dependencyMatcherStrategy">
 				<bean class="net.ayld.facade.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
 					<property name="conditions">
-						<util:set>
-							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+						<set>
+							<bean class="net.ayld.facade.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
 							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
-						</util:set>
+							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+						</set>
 					</property>
 				</bean>
 			</property>
+			<property name="classDependencyResolver" ref="classDependencyResolver"/>
+			<property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
+			<property name="jarExploder" ref="jarExploder"/>
+			<property name="jarMaker" ref="jarMaker"/>
+			<property name="libExtractDir" ref="workDir"/>
 		</bean>
 		
 </beans>

@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Required;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 
-public class SpringFacadeApi implements Facade {
+public final class SpringFacadeApi implements Facade {
 	
 	private static final String JAR_FILE_EXTENSION = "jar";
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
