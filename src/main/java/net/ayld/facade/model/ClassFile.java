@@ -5,8 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 import java.util.Set;
+
+import org.apache.bcel.classfile.ClassParser;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
@@ -16,7 +17,7 @@ import com.google.common.io.Resources;
  * Meant to represent a compiled binary .class file on the file system.
  * 
  * This class tries to do everything it can to make sure it wraps a file that is actually a Java .class file.
- * It does this by reading the .class file bytes and checking whether they match the JVM .class file specifications.
+ * It does this by parsing the binary .class file and checking whether they match the JVM .class file specifications.
  * 
  * More info here:
  *   http://en.wikipedia.org/wiki/Java_class_file
@@ -34,7 +35,6 @@ public class ClassFile { // XXX magic numbers
 	);
 	
 	private final File classFile;
-	private final byte[] binary;
 	private final ClassName qualifiedName;
 
 	private ClassFile(File classfile) { // XXX copy code
@@ -42,21 +42,13 @@ public class ClassFile { // XXX magic numbers
 			if (!isClassfile(classfile)) {
 				throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file");
 			}
-			
 			this.classFile = classfile;
-			this.binary = Files.readAllBytes(classFile.toPath());
-				
+			
+			this.qualifiedName = new ClassName(new ClassParser(classFile.toString()).parse().getClassName());
+			
 		} catch (URISyntaxException | IOException e) {
 			throw new IllegalArgumentException("file: " + classfile.getAbsolutePath() + ", not valid or is not a class file", e);
 		}
-		
-		this.qualifiedName = new ClassName(new ClassLoader() {
-			
-			public Class<?> defineClass(byte[] binary) {
-				return defineClass(null, binary, 0, binary.length);
-			}
-			
-		}.defineClass(binary).getName());
 	}
 	
 	
