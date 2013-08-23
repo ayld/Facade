@@ -11,8 +11,12 @@
 		
 		<import resource="classpath:META-INF/common.xml" />
 		
-		<bean id="workDir" class="java.lang.String" factory-method="valueOf">
+		<bean id="compactionDir" class="java.lang.String" factory-method="valueOf">
 			<constructor-arg value="${jar.compaction.dir}" type="java.lang.Object"/>
+		</bean>
+		
+		<bean id="workDir" class="java.lang.String" factory-method="valueOf">
+			<constructor-arg value="#{compactionDir.concat('/jarMakerTests')}" type="java.lang.Object"/>
 		</bean>
 	
 		<bean id="jarMaker" class="net.ayld.facade.bundle.impl.ManualJarMaker">

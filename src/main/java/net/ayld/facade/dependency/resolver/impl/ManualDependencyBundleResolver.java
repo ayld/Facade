@@ -28,7 +28,6 @@ public class ManualDependencyBundleResolver implements DependencyBundleResolver{
 	
 	@Override
 	public Set<JarFile> resolve(ClassName className, Set<JarFile> bundles) throws IOException {
-		// TODO check that the class name is properly formatted (is a fully qualified class name)
 		final Set<JarFile> result = Sets.newHashSet();
 		for (ExplodedJar explodedJar : jarExploder.explode(bundles)) {
 			
