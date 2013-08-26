@@ -61,7 +61,7 @@ public class TestSpringFacadeApiNoContext {
 	
 	@Test
 	public void compress() throws IOException {
-		ApiBuilder.build().compressDependencies(srcDir, libDir);
+		ApiBuilder.buildDefault().compressDependencies(srcDir, libDir);
 	}
 	
 	private static void delete(File file) throws IOException {
