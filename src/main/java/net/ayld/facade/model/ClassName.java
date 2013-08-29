@@ -1,6 +1,9 @@
 package net.ayld.facade.model;
 
+import java.util.Set;
 import java.util.regex.Pattern;
+
+import com.google.common.collect.ImmutableSet;
 
 import net.ayld.facade.util.Tokenizer;
 
@@ -22,6 +25,17 @@ public final class ClassName {
 	 * */
 	private final static String CLASS_NAME_VALIDATION_REGEX = "([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*";
 	
+	
+	/** 
+	 * Class names that are valid classes, but still don't match the above regex.
+	 * 
+	 * See here:
+	 *     http://docs.oracle.com/javase/7/docs/technotes/tools/solaris/javadoc.html#packagecomment
+	 * */
+	private final static Set<String> EXCEPTIONAL_CLASS_NAMES = ImmutableSet.of(
+			"package-info"
+	);
+	
 	private final String qualifiedClassName;
 
 	/** 
@@ -42,7 +56,7 @@ public final class ClassName {
 	}
 
 	private static boolean isClassName(String qualifiedClassName) {
-		return Pattern.matches(CLASS_NAME_VALIDATION_REGEX, qualifiedClassName);
+		return Pattern.matches(CLASS_NAME_VALIDATION_REGEX, qualifiedClassName) || EXCEPTIONAL_CLASS_NAMES.contains(qualifiedClassName);
 	}
 
 	/** 
