@@ -3,7 +3,9 @@ package net.ayld.facade.dependency.resolver.impl;
 import java.io.IOException;
 import java.util.Set;
 
+import net.ayld.facade.component.ListenableComponent;
 import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
+import net.ayld.facade.event.model.ClassResolverUpdate;
 import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
 
@@ -17,10 +19,11 @@ import org.apache.bcel.classfile.JavaClass;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public class ManualBinaryParseClassDependencyResolver implements ClassDependencyResolver{
+public class ManualBinaryParseClassDependencyResolver extends ListenableComponent implements ClassDependencyResolver{
 
 	@Override
 	public Set<ClassName> resolve(ClassFile classFile) throws IOException {
+		eventBus.post(new ClassResolverUpdate("resolving: " + classFile.physicalFile().getAbsolutePath()));
 		
 		final JavaClass javaClass = new ClassParser(classFile.toString()).parse();
 		

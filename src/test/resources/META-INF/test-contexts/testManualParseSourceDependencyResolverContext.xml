@@ -9,7 +9,12 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
 		
+		<bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
 		
-		<bean id="sourceDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver"/>
+		<bean id="parentResolver" class="net.ayld.facade.component.ListenableComponent" abstract="true">
+			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
+		</bean>
+		
+		<bean id="sourceDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentResolver"/>
 		
 </beans>

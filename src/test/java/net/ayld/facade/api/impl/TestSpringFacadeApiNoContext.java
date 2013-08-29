@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import net.ayld.facade.api.ApiBuilder;
 import net.ayld.facade.util.Files;
 import net.ayld.facade.util.Tokenizer;
 
@@ -61,7 +60,22 @@ public class TestSpringFacadeApiNoContext {
 	
 	@Test
 	public void compress() throws IOException {
-		ApiBuilder.buildDefault().compressDependencies(srcDir, libDir);
+		
+//		ApiBuilder.outputJar(new File("/tmp/facede-out/facade.jar"))
+//			.addListener(new Object() {
+//				
+//				@Subscribe
+//				public void receiveSourceResolverUpdates(SourceResolverUpdate u) {
+//					System.out.println(u);
+//				}
+//				
+//				@Subscribe
+//				public void receiveClassResolverUpdates(ClassResolverUpdate u) {
+//					System.out.println(u);
+//				}
+//			})
+//			.build()
+//			.compressDependencies(new File("/home/siliev/workspaces/git/Facade"), new File("/home/siliev/m2/repository"));
 	}
 	
 	private static void delete(File file) throws IOException {

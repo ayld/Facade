@@ -8,7 +8,13 @@
 		
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util.xsd">
+
+		<bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
 		
-		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver"/>
+		<bean id="parentResolver" class="net.ayld.facade.component.ListenableComponent" abstract="true">
+			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
+		</bean>
+		
+		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentResolver"/>
 		
 </beans>

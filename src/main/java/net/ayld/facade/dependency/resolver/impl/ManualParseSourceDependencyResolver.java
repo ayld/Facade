@@ -3,7 +3,9 @@ package net.ayld.facade.dependency.resolver.impl;
 import java.io.IOException;
 import java.util.Set;
 
+import net.ayld.facade.component.ListenableComponent;
 import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
+import net.ayld.facade.event.model.SourceResolverUpdate;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
 import net.ayld.facade.util.Tokenizer;
@@ -16,10 +18,11 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 
 @ThreadSafe
-public class ManualParseSourceDependencyResolver implements SourceDependencyResolver{
+public class ManualParseSourceDependencyResolver extends ListenableComponent implements SourceDependencyResolver{
 
 	@Override
 	public Set<ClassName> resolve(SourceFile source) throws IOException {
+		eventBus.post(new SourceResolverUpdate("resolving: " + source.physicalFile().getAbsolutePath()));
 		
 		final String sourceFileContent = Resources.toString(source.physicalFile().toURI().toURL(), Charsets.UTF_8);
 		
@@ -33,6 +36,8 @@ public class ManualParseSourceDependencyResolver implements SourceDependencyReso
 				result.add(new ClassName(dependency));
 			}
 		}
+		
+		eventBus.post(new SourceResolverUpdate("resolved: " + result));
 		
 		return ImmutableSet.copyOf(result);
 	}

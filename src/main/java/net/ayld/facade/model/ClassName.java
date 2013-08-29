@@ -56,11 +56,15 @@ public final class ClassName {
 	}
 
 	private static boolean isClassName(String qualifiedClassName) {
-		return Pattern.matches(CLASS_NAME_VALIDATION_REGEX, qualifiedClassName) || EXCEPTIONAL_CLASS_NAMES.contains(qualifiedClassName);
+		final String shortName = Tokenizer.delimiter(".").tokenize(qualifiedClassName).lastToken();
+		
+		return Pattern.matches(CLASS_NAME_VALIDATION_REGEX, qualifiedClassName) || EXCEPTIONAL_CLASS_NAMES.contains(shortName);
 	}
 
 	/** 
 	 * Returns the short name of the wrapped qualified class name.
+	 * 
+	 * <pre>
 	 * 
 	 * In other words for this:
 	 *   
@@ -70,6 +74,7 @@ public final class ClassName {
 	 * 
 	 *   <code>ClassName</code>
 	 *   
+	 * <pre>
 	 *   
 	 * @return the short name of the wrapped qualified class name
 	 * */
