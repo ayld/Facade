@@ -32,6 +32,8 @@ public class ManualBinaryParseClassDependencyResolver extends ListenableComponen
 		
 		classWalker.visit();
 		
+		eventBus.post(new ClassResolverUpdate("resolved: " + dependencyVisitor.getFoundDependencies()));
+		
 		return dependencyVisitor.getFoundDependencies();
 	}
 	

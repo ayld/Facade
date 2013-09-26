@@ -32,6 +32,10 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 			
 			if (line.startsWith(SourceFile.IMPORT_KEYWOD)) {
 				
+				if (line.endsWith(SourceFile.WILDCARD_IMPORT_SUFFIX)) {
+					throw new IllegalArgumentException("wildcard imports: " + line + ", not currently supported");
+				}
+				
 				final String dependency = Tokenizer.delimiter(" ").tokenize(line).lastToken().replaceAll(";", "");
 				result.add(new ClassName(dependency));
 			}

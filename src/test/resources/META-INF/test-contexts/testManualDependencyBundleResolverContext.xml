@@ -17,6 +17,9 @@
 		
 		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">
 			<property name="workDir" value="${jar.extraction.dir}"/>
+			<property name="eventBus">
+				<bean class="com.google.common.eventbus.EventBus"/>
+			</property>
 		</bean>
 		
 		<bean id="bundleResolver" class="net.ayld.facade.dependency.resolver.impl.ManualDependencyBundleResolver">

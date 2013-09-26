@@ -15,14 +15,14 @@
 
 		<bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
 		
-		<bean id="parentResolver" class="net.ayld.facade.component.ListenableComponent" abstract="true">
+		<bean id="parentListenableComponent" class="net.ayld.facade.component.ListenableComponent" abstract="true">
 			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
 		</bean>
 		
-		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentResolver"/>
-		<bean id="sourceDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentResolver"/>
+		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentListenableComponent"/>
+		<bean id="sourceDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualParseSourceDependencyResolver" parent="parentListenableComponent"/>
 		
-		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">
+		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
 			<property name="workDir" value="#{workDir}"/>
 		</bean>
 		<bean id="jarMaker" class="net.ayld.facade.bundle.impl.ManualJarMaker">

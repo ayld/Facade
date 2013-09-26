@@ -26,6 +26,7 @@
 		
 		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">
 			<property name="workDir" value="#{workDir}"/>
+			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
 		</bean>
 		<bean id="jarMaker" class="net.ayld.facade.bundle.impl.ManualJarMaker">
 			<property name="zippedJarName" value="#{workDir.concat('/facade.jar')}"/>
@@ -33,6 +34,7 @@
 		
 		<bean id="assertionExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder">
 			<property name="workDir" value="#{workDir.concat('/assert')}"/>
+			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
 		</bean>
 		
 		<bean id="facadeApi" class="net.ayld.facade.api.impl.SpringFacadeApi">

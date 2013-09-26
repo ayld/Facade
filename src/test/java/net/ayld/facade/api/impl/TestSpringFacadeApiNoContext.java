@@ -1,10 +1,17 @@
 package net.ayld.facade.api.impl;
 
+import static junit.framework.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.jar.JarFile;
 
+import net.ayld.facade.api.ApiBuilder;
+import net.ayld.facade.event.model.ClassResolverUpdate;
+import net.ayld.facade.event.model.JarExtractionStartUpdate;
+import net.ayld.facade.event.model.SourceResolverUpdate;
 import net.ayld.facade.util.Files;
 import net.ayld.facade.util.Tokenizer;
 
@@ -12,6 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.google.common.eventbus.Subscribe;
 import com.google.common.io.Resources;
 
 public class TestSpringFacadeApiNoContext {
@@ -59,23 +68,38 @@ public class TestSpringFacadeApiNoContext {
 	}
 	
 	@Test
-	public void compress() throws IOException {
-		
-//		ApiBuilder.outputJar(new File("/tmp/facede-out/facade.jar"))
-//			.addListener(new Object() {
-//				
-//				@Subscribe
-//				public void receiveSourceResolverUpdates(SourceResolverUpdate u) {
-//					System.out.println(u);
-//				}
-//				
-//				@Subscribe
-//				public void receiveClassResolverUpdates(ClassResolverUpdate u) {
-//					System.out.println(u);
-//				}
-//			})
-//			.build()
-//			.compressDependencies(new File("/home/siliev/workspaces/git/Facade"), new File("/home/siliev/m2/repository"));
+	public void addListeners() throws IOException {
+		ApiBuilder.outputJar(new File("facade.jar"))
+			.addListener(new Object() {
+				
+				@Subscribe
+				public void receiveSourceResolverUpdates(SourceResolverUpdate u) {
+					assertTrue(u != null);
+					assertTrue(!Strings.isNullOrEmpty(u.getMessage()));
+				}
+				
+				@Subscribe
+				public void receiveClassResolverUpdates(ClassResolverUpdate u) {
+					assertTrue(u != null);
+					assertTrue(!Strings.isNullOrEmpty(u.getMessage()));
+				}
+				
+				@Subscribe
+				public void receiveJarExploderUpdates(JarExtractionStartUpdate u) {
+					assertTrue(u != null);
+					assertTrue(!Strings.isNullOrEmpty(u.getMessage()));
+					assertTrue(u.getOn() != null);
+					assertTrue(u.getTo() != null);
+				}
+			})
+			.build()
+			.compressDependencies(srcDir, libDir);
+	}
+
+	@Test
+	public void compress() throws IOException { // TODO this is just a sanity check, a bit more asserts are needed
+		final JarFile facadeJar = ApiBuilder.buildWithDefaultConfig().compressDependencies(srcDir, libDir);
+		assertTrue(facadeJar != null);
 	}
 	
 	private static void delete(File file) throws IOException {

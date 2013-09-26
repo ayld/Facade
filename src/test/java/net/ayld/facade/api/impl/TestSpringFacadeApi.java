@@ -82,11 +82,9 @@ public class TestSpringFacadeApi {
 	@Test
 	public void compress() throws IOException {
 		final JarFile facadeJar = facadeApi.compressDependencies(srcDir, libDir);
-		
 		Assert.assertTrue(facadeJar != null);
 		
 		final ExplodedJar explodedFacadeJar = assertionExploder.explode(facadeJar);
-		
 		Assert.assertTrue(Files.in(explodedFacadeJar.getExtractedPath()).all().size() == 2);
 	}
 	

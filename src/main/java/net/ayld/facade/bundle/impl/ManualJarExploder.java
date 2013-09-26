@@ -10,20 +10,22 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import net.ayld.facade.bundle.JarExploder;
+import net.ayld.facade.component.ListenableComponent;
+import net.ayld.facade.event.model.JarExtractionStartUpdate;
+import net.ayld.facade.exception.ExtractionException;
+import net.ayld.facade.model.ExplodedJar;
+import net.ayld.facade.util.Tokenizer;
+import net.ayld.facade.util.annotation.ThreadSafe;
+
 import org.springframework.beans.factory.annotation.Required;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-import net.ayld.facade.bundle.JarExploder;
-import net.ayld.facade.exception.ExtractionException;
-import net.ayld.facade.model.ExplodedJar;
-import net.ayld.facade.util.Tokenizer;
-import net.ayld.facade.util.annotation.ThreadSafe;
-
 @ThreadSafe
-public class ManualJarExploder implements JarExploder{
+public class ManualJarExploder extends ListenableComponent implements JarExploder{
 
 	private String workDir;
 	
@@ -40,6 +42,8 @@ public class ManualJarExploder implements JarExploder{
 	
 	@Override
 	public ExplodedJar explode(JarFile jar) throws IOException {// XXX huge jumbo method
+		eventBus.post(new JarExtractionStartUpdate("extracting: " + jar.getName(), new File(jar.getName()), new File(workDir)));
+		
 		final String jarName = Tokenizer.delimiter(File.separator).tokenize(jar.getName()).lastToken();
 		final String jarPath = Joiner.on(File.separator).join(workDir, jarName);
 		

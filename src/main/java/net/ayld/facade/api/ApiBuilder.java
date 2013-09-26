@@ -48,10 +48,9 @@ public final class ApiBuilder { // XXX magic strings
 		if (name != null) {
 			
 			final ManualJarMaker jarMakerBean = (ManualJarMaker) context.getBean("jarMaker");
-			
 			jarMakerBean.setZippedJarName(name.getAbsolutePath());
 		}
-		if (componentListeners.size() > 1) {
+		if (componentListeners.size() > 0) {
 			
 			final EventBus eventBus = (EventBus) context.getBean("resolverStatusUpdateEventBus");
 			
