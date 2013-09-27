@@ -5,3 +5,44 @@ Facade
 
 Facade tries to create a jar from all of the jars used by a project.
 The facade jar should contain only classes the project actually uses, nothing else.
+
+This is currently just a library, but it should evolve to a Maven plugin and perhaps a web project.
+
+## Features
+
+### Source Dependency Resolution
+
+Facade can resolve the dependencies of .java source files. 
+Currently like this:
+
+```java
+FacadeApi
+  .buildWithDefaultConfig()
+  .dependencies()
+  .fromSource(SourceFile.fromFile(aFile));
+```
+
+### Binary Class Dependency Resolution
+
+Facade can also resolve the dependencies of compiled binary .class files:
+
+```java
+FacadeApi
+  .buildWithDefaultConfig()
+  .dependencies()
+  .fromClass(ClassFile.fromFile(aFile));
+```
+
+### Library minimization
+
+This will try to find all the 'actual dependencies' that a set of sources use and package them in a Jar.
+
+```java
+final JarFile facadeJar = ApiBuilder
+                            .buildWithDefaultConfig()
+                            .compressDependencies(srcDir, libsDir);
+```
+
+## Notes
+
+Keep in mind that we're currently in very early alpha and the API changes constantly and can change dramatically :)
