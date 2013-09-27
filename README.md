@@ -50,7 +50,7 @@ resolving the dependencies of a binary class you can:
 
 ```java
 ApiBuilder
-  .buildWithDefaultConfig()
+	.buildWithDefaultConfig()
 	.addListener(new Object() {
 	
 		@Subscribe
