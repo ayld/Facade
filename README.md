@@ -67,3 +67,5 @@ ApiBuilder
 ## Notes
 
 Keep in mind that we're currently in very early alpha and the API changes constantly and can change dramatically :)
+Also wildcard imports in source files like `import com.something.*;` are currently not supported. So calling source
+dependency resolution on such a file or on a set containing one will result in an exception.
