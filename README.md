@@ -43,6 +43,26 @@ final JarFile facadeJar = ApiBuilder
                             .compressDependencies(srcDir, libsDir);
 ```
 
+### Update listeners
+
+Facade can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
+resolving the dependencies of a binary class you can:
+
+```java
+ApiBuilder
+  .buildWithDefaultConfig()
+	.addListener(new Object() {
+	
+    @Subscribe
+		public void receiveClassResolverUpdates(ClassResolverUpdate u) {
+		  System.out.println(u);
+		}
+	})
+	.compressDependencies(srcDir, libDir);
+```
+
+
+
 ## Notes
 
 Keep in mind that we're currently in very early alpha and the API changes constantly and can change dramatically :)
