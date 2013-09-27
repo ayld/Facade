@@ -53,12 +53,13 @@ ApiBuilder
   .buildWithDefaultConfig()
 	.addListener(new Object() {
 	
-    @Subscribe
+		@Subscribe
 		public void receiveClassResolverUpdates(ClassResolverUpdate u) {
 		  System.out.println(u);
 		}
 	})
-	.compressDependencies(srcDir, libDir);
+	.dependencies
+	.fromClass(ClassFile.fromFile(aFile));
 ```
 
 
