@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
+import net.ayld.facade.dependency.resolver.DependencyResolver;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
 
@@ -29,7 +29,7 @@ public class TestManualParseSourceDependencyResolver {
 	private static final String JAVA_IMPORT_KEYWOD = "import";
 	
 	@Autowired
-	private SourceDependencyResolver sourceDependencyResolver;
+	private DependencyResolver<SourceFile> sourceDependencyResolver;
 	
 	@Test
 	public void testResolve() throws IOException, URISyntaxException {

@@ -9,8 +9,7 @@ import net.ayld.facade.api.Facade;
 import net.ayld.facade.bundle.JarExploder;
 import net.ayld.facade.bundle.JarMaker;
 import net.ayld.facade.dependency.matcher.DependencyMatcherStrategy;
-import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
-import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
+import net.ayld.facade.dependency.resolver.DependencyResolver;
 import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
@@ -26,8 +25,8 @@ public final class SpringFacadeApi implements Facade {
 	private static final String JAR_FILE_EXTENSION = "jar";
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
 
-	private ClassDependencyResolver classDependencyResolver;
-	private SourceDependencyResolver sourceDependencyResolver;
+	private DependencyResolver<ClassFile> classDependencyResolver;
+	private DependencyResolver<SourceFile> sourceDependencyResolver;
 	private DependencyMatcherStrategy dependencyMatcherStrategy;
 	
 	private JarExploder jarExploder;
@@ -144,12 +143,12 @@ public final class SpringFacadeApi implements Facade {
 	}
 
 	@Required
-	public void setClassDependencyResolver(ClassDependencyResolver classDependencyResolver) {
+	public void setClassDependencyResolver(DependencyResolver<ClassFile> classDependencyResolver) {
 		this.classDependencyResolver = classDependencyResolver;
 	}
 
 	@Required
-	public void setSourceDependencyResolver(SourceDependencyResolver sourceDependencyResolver) {
+	public void setSourceDependencyResolver(DependencyResolver<SourceFile> sourceDependencyResolver) {
 		this.sourceDependencyResolver = sourceDependencyResolver;
 	}
 }

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import junit.framework.Assert;
-import net.ayld.facade.dependency.resolver.ClassDependencyResolver;
+import net.ayld.facade.dependency.resolver.DependencyResolver;
 import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
 
@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class TestManualBinaryParseClassDependencyResolver {
 
 	@Autowired
-	private ClassDependencyResolver classDependencyResolver;
+	private DependencyResolver<ClassFile> classDependencyResolver;
 	
 	@Test
 	public void resolve() throws IOException {

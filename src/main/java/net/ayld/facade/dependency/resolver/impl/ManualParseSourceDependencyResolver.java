@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import net.ayld.facade.component.ListenableComponent;
-import net.ayld.facade.dependency.resolver.SourceDependencyResolver;
+import net.ayld.facade.dependency.resolver.DependencyResolver;
 import net.ayld.facade.event.model.SourceResolverUpdate;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
@@ -18,7 +18,7 @@ import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 
 @ThreadSafe
-public class ManualParseSourceDependencyResolver extends ListenableComponent implements SourceDependencyResolver{
+public class ManualParseSourceDependencyResolver extends ListenableComponent implements DependencyResolver<SourceFile>{
 
 	@Override
 	public Set<ClassName> resolve(SourceFile source) throws IOException {
