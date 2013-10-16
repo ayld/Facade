@@ -12,7 +12,15 @@
 		<bean id="workDir" class="java.lang.String" factory-method="valueOf">
 			<constructor-arg value="${jar.compaction.dir}" type="java.lang.Object"/>
 		</bean>
-
+		
+		<bean id="defaultOutJarName" class="java.lang.String" factory-method="valueOf">
+			<constructor-arg value="${jar.facade.name}" type="java.lang.Object"/>
+		</bean>
+		
+		<bean id="defaultOutJar" class="java.lang.String" factory-method="valueOf">
+			<constructor-arg value="#{workDir.concat(defaultOutJarName)}" type="java.lang.Object"/>
+		</bean>
+		
 		<bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
 		
 		<bean id="parentListenableComponent" class="net.ayld.facade.component.ListenableComponent" abstract="true">
@@ -26,26 +34,16 @@
 			<property name="workDir" value="#{workDir}"/>
 		</bean>
 		<bean id="jarMaker" class="net.ayld.facade.bundle.impl.ManualJarMaker">
-			<property name="zippedJarName" value="#{workDir.concat('/facade.jar')}"/>
+			<property name="zippedJarName" value="#{defaultOutJar}"/>
 		</bean>
 		
-		<bean id="facadeApi" class="net.ayld.facade.api.impl.SpringFacadeApi">
-			<property name="dependencyMatcherStrategy">
-				<bean class="net.ayld.facade.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
-					<property name="conditions">
-						<set>
-							<bean class="net.ayld.facade.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
-							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
-							<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
-						</set>
-					</property>
-				</bean>
+		<bean id="unanimousMatcher" class="net.ayld.facade.dependency.matcher.impl.UnanimousBasedDependencyMatcherStrategy">
+			<property name="conditions">
+				<set>
+					<bean class="net.ayld.facade.dependency.matcher.condition.impl.BinaryClassNameVsDependencyQualifiedName"/>
+					<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassnamePackagesVsClassfilePath"/>
+					<bean class="net.ayld.facade.dependency.matcher.condition.impl.ClassShortNameVsClassFilename"/>
+				</set>
 			</property>
-			<property name="classDependencyResolver" ref="classDependencyResolver"/>
-			<property name="sourceDependencyResolver" ref="sourceDependencyResolver"/>
-			<property name="jarExploder" ref="jarExploder"/>
-			<property name="jarMaker" ref="jarMaker"/>
-			<property name="libExtractDir" ref="workDir"/>
 		</bean>
-		
 </beans>

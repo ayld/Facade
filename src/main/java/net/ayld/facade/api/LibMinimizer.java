@@ -1,11 +1,10 @@
-package net.ayld.facade.api.impl;
+package net.ayld.facade.api;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.jar.JarFile;
 
-import net.ayld.facade.api.Facade;
 import net.ayld.facade.bundle.JarExploder;
 import net.ayld.facade.bundle.JarMaker;
 import net.ayld.facade.dependency.matcher.DependencyMatcherStrategy;
@@ -13,36 +12,78 @@ import net.ayld.facade.dependency.resolver.DependencyResolver;
 import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
+import net.ayld.facade.util.Components;
 import net.ayld.facade.util.Files;
+import net.ayld.facade.util.Settings;
 
-import org.springframework.beans.factory.annotation.Required;
-
-import com.google.common.base.Strings;
+import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 
-public final class SpringFacadeApi implements Facade {
-	
-	private static final String JAR_FILE_EXTENSION = "jar";
+public final class LibMinimizer {
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
-
-	private DependencyResolver<ClassFile> classDependencyResolver;
-	private DependencyResolver<SourceFile> sourceDependencyResolver;
-	private DependencyMatcherStrategy dependencyMatcherStrategy;
 	
-	private JarExploder jarExploder;
-	private JarMaker jarMaker;
+	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.<DependencyResolver<ClassFile>>getInstance();
+	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.<DependencyResolver<SourceFile>>getInstance();
+	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY.<DependencyMatcherStrategy>getInstance();
 	
-	private String libExtractDir;
+	private final JarExploder jarExploder = Components.JAR_EXPLODER.<JarExploder>getInstance();
+	private final JarMaker jarMaker = Components.JAR_MAKER.<JarMaker>getInstance();
+	
+	private String workDir = Settings.DEFAULT_OUT_DIR.getValue();
+	private File outJar = new File(
+		Joiner
+			.on(File.separator)
+			.join(workDir, Settings.DEFAULT_FACADE_JAR_NAME.getValue())
+	);
+	
+	private File libDir;
+	private final File sourceDir;
 
-	@Override
-	public JarFile compressDependencies(File sourceDir, File libDir) throws IOException {
-		if (sourceDir == null || !sourceDir.isDirectory()) {
-			throw new IllegalArgumentException("sourceDir: " + sourceDir + ", is either null or not a directory");
-		}
-		if (libDir == null || !libDir.isDirectory()) {
-			throw new IllegalArgumentException("libDir: " + libDir + ", is either null or not a directory");
+	private LibMinimizer(File sourceDir) {
+		final File outJarDir = new File(outJar.getParent());
+		
+		if (!outJarDir.exists() && !outJarDir.mkdirs()) {
+			throw new IllegalStateException("unable to create parent dir for output jar: " + outJar.getParent());
 		}
 		
+		this.sourceDir = sourceDir;
+	}
+
+	public static LibMinimizer forSourcesAt(String srcDir) {
+		final File sourceDir = new File(srcDir);
+		
+		if (!sourceDir.exists() || !sourceDir.isDirectory()) {
+			throw new IllegalArgumentException("directory at: " + srcDir + " does not exist or is not a directory");
+		}
+		
+		return new LibMinimizer(sourceDir);
+	}
+	
+	public LibMinimizer withLibs(String libDir) {
+		final File lib = new File(libDir);
+		
+		if (!sourceDir.exists() || !sourceDir.isDirectory()) {
+			throw new IllegalArgumentException("directory at: " + libDir + " does not exist or is not a directory");
+		}
+		
+		this.libDir = lib;
+		
+		return this;
+	}
+	
+	public LibMinimizer output(String outDir) {
+		final File out = new File(outDir);
+		
+		if (!out.exists() && !out.mkdirs()) {
+			throw new IllegalStateException("unable to create dir for output jar: " + outDir);
+		}
+		
+		this.outJar = new File(Joiner.on(File.separator).join(out.getAbsolutePath(), Settings.DEFAULT_FACADE_JAR_NAME.getValue()));
+		
+		return this;
+	}
+	
+	public JarFile getFile() throws IOException {
 		final String libDirPath = libDir.getAbsolutePath();
 		extractLibJars(libDirPath);
 		
@@ -65,7 +106,7 @@ public final class SpringFacadeApi implements Facade {
 		
 		return jarMaker.zip(dependenciesForPackaging);
 	}
-
+	
 	private Set<ClassFile> getDependenciesOfDependencies(Set<ClassFile> deps) throws IOException {
 		removeJavaApiDeps(deps);
 
@@ -79,7 +120,7 @@ public final class SpringFacadeApi implements Facade {
 		
 		return getDependenciesOfDependencies(deps);
 	}
-
+	
 	private void removeJavaApiDeps(Set<ClassFile> deps) {
 		for (ClassFile dep : deps) {
 			if (dep.qualifiedName().toString().startsWith(JAVA_API_ROOT_PACKAGE)) {
@@ -87,11 +128,11 @@ public final class SpringFacadeApi implements Facade {
 			}
 		}
 	}
-
+	
 	private Set<ClassFile> dependenciesAsFiles(Set<ClassName> dependencyNames) throws IOException {
 		
 		final Set<File> libClasses = Sets.newHashSet();
-		for (File allLibClasses : Files.in(libExtractDir).withExtension(ClassFile.EXTENSION).list()) {
+		for (File allLibClasses : Files.in(workDir).withExtension(ClassFile.EXTENSION).list()) {
 			libClasses.add(allLibClasses);
 		}
 		
@@ -108,47 +149,14 @@ public final class SpringFacadeApi implements Facade {
 		}
 		return result;
 	}
-
+	
 	private void extractLibJars(String libDir) throws IOException {
 		final Set<JarFile> libJars = Sets.newHashSet();
 		
-		for (File jarFile : Files.in(libDir).withExtension(JAR_FILE_EXTENSION).list()) {
+		for (File jarFile : Files.in(libDir).withExtension(JarMaker.JAR_FILE_EXTENSION).list()) {
 			libJars.add(new JarFile(jarFile));
 		}
 		
 		jarExploder.explode(libJars);
-	}
-
-	@Required
-	public void setDependencyMatcherStrategy(DependencyMatcherStrategy dependencyMatcherStrategy) {
-		this.dependencyMatcherStrategy = dependencyMatcherStrategy;
-	}
-
-	@Required
-	public void setJarExploder(JarExploder jarExploder) {
-		this.jarExploder = jarExploder;
-	}
-
-	@Required
-	public void setJarMaker(JarMaker jarMaker) {
-		this.jarMaker = jarMaker;
-	}
-
-	@Required
-	public void setLibExtractDir(String libExtractDir) {
-		if (Strings.isNullOrEmpty(libExtractDir) || !new File(libExtractDir).isDirectory()) {
-			throw new IllegalArgumentException("libExtractDir: " + libExtractDir + " does not exist or is not a directory");
-		}
-		this.libExtractDir = libExtractDir;
-	}
-
-	@Required
-	public void setClassDependencyResolver(DependencyResolver<ClassFile> classDependencyResolver) {
-		this.classDependencyResolver = classDependencyResolver;
-	}
-
-	@Required
-	public void setSourceDependencyResolver(DependencyResolver<SourceFile> sourceDependencyResolver) {
-		this.sourceDependencyResolver = sourceDependencyResolver;
 	}
 }

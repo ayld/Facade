@@ -1,4 +1,4 @@
-package net.ayld.facade.api.impl;
+package net.ayld.facade.api;
 
 import java.util.Set;
 
@@ -15,8 +15,8 @@ public class DependenciesTest {
 	@Test
 	public void fromClass() {
 		final Set<ClassName> dependencies = Dependencies
-												.ofClass(ClassFile.fromClasspath("test-classes/primefaces-3.5.jar/org/primefaces/model/TreeTableModel.class"))
-												.set();
+				.ofClass(ClassFile.fromClasspath("test-classes/primefaces-3.5.jar/org/primefaces/model/TreeTableModel.class"))
+				.set();
 		
 		Assert.assertTrue(dependencies != null);
 		Assert.assertTrue(!dependencies.isEmpty());
@@ -26,8 +26,8 @@ public class DependenciesTest {
 	@Test
 	public void fromSource() {
 		final Set<ClassName> dependencies = Dependencies
-												.ofSource(SourceFile.fromClasspath("test-classes/ValidCoffee.java"))
-												.set();
+				.ofSource(SourceFile.fromClasspath("test-classes/ValidCoffee.java"))
+				.set();
 		
 		Assert.assertTrue(dependencies != null);
 		Assert.assertTrue(!dependencies.isEmpty());

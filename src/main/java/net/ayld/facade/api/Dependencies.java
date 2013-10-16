@@ -7,21 +7,14 @@ import net.ayld.facade.dependency.resolver.DependencyResolver;
 import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import net.ayld.facade.util.Components;
 
 import com.google.common.collect.ImmutableSet;
 
 public final class Dependencies {
 	
-	private final ApplicationContext context = new ClassPathXmlApplicationContext("META-INF/context.xml");
-	
-	@SuppressWarnings("unchecked")
-	private final DependencyResolver<ClassFile> classDependencyResolver = (DependencyResolver<ClassFile>) context.getBean("classDependencyResolver");
-	
-	@SuppressWarnings("unchecked")
-	private final DependencyResolver<SourceFile> sourceDependencyResolver = (DependencyResolver<SourceFile>) context.getBean("sourceDependencyResolver");
+	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.<DependencyResolver<ClassFile>>getInstance();
+	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.<DependencyResolver<SourceFile>>getInstance();
 	
 	private final boolean sourceResolution;
 	private final Set<?> of;

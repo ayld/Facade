@@ -7,5 +7,7 @@ import java.util.jar.JarFile;
 
 public interface JarMaker {
 	
+	public static final String JAR_FILE_EXTENSION = "jar";
+	
 	public JarFile zip(Set<File> classFiles) throws IOException;
 }
