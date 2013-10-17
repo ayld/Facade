@@ -21,10 +21,10 @@
 			<constructor-arg value="#{workDir.concat(defaultOutJarName)}" type="java.lang.Object"/>
 		</bean>
 		
-		<bean id="resolverStatusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
+		<bean id="statusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
 		
 		<bean id="parentListenableComponent" class="net.ayld.facade.component.ListenableComponent" abstract="true">
-			<property name="eventBus" ref="resolverStatusUpdateEventBus"/>
+			<property name="eventBus" ref="statusUpdateEventBus"/>
 		</bean>
 		
 		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ManualBinaryParseClassDependencyResolver" parent="parentListenableComponent"/>

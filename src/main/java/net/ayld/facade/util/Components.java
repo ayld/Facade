@@ -7,7 +7,8 @@ public enum Components {
 	JAR_EXPLODER("jarExploder"),
 	CLASS_DEPENDENCY_RESOLVER("classDependencyResolver"),
 	SOURCE_DEPENDENCY_RESOLVER("sourceDependencyResolver"),
-	DEPENDENCY_MATCHER_STRATEGY("unanimousMatcher");
+	DEPENDENCY_MATCHER_STRATEGY("unanimousMatcher"),
+	EVENT_BUS("statusUpdateEventBus");
 	
 	private final ApplicationContext context;
 	private final String name;

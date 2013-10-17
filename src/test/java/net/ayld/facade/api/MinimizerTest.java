@@ -17,7 +17,7 @@ public class MinimizerTest {
 	
 	@Test
 	public void minimize() throws IOException {
-		final JarFile outJar = LibMinimizer
+		final JarFile outJar = LibraryMinimizer
 			.forSourcesAt(toPath(Resources.getResource("test-classes/test-src-dir")))
 			.withLibs(toPath(Resources.getResource("test-classes/test-lib-dir")))
 			.getFile();
@@ -29,7 +29,7 @@ public class MinimizerTest {
 		Assert.assertTrue(outJarName.equals(Settings.DEFAULT_FACADE_JAR_NAME.getValue()));
 	}
 	
-	public String toPath(URL uri) {
+	private String toPath(URL uri) {
 		return Tokenizer.delimiter(":").tokenize(uri.toString()).lastToken();
 	}
 }

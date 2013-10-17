@@ -19,7 +19,7 @@ import net.ayld.facade.util.Settings;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 
-public final class LibMinimizer {
+public final class LibraryMinimizer {
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
 	
 	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.<DependencyResolver<ClassFile>>getInstance();
@@ -39,7 +39,7 @@ public final class LibMinimizer {
 	private File libDir;
 	private final File sourceDir;
 
-	private LibMinimizer(File sourceDir) {
+	private LibraryMinimizer(File sourceDir) {
 		final File outJarDir = new File(outJar.getParent());
 		
 		if (!outJarDir.exists() && !outJarDir.mkdirs()) {
@@ -49,17 +49,17 @@ public final class LibMinimizer {
 		this.sourceDir = sourceDir;
 	}
 
-	public static LibMinimizer forSourcesAt(String srcDir) {
+	public static LibraryMinimizer forSourcesAt(String srcDir) {
 		final File sourceDir = new File(srcDir);
 		
 		if (!sourceDir.exists() || !sourceDir.isDirectory()) {
 			throw new IllegalArgumentException("directory at: " + srcDir + " does not exist or is not a directory");
 		}
 		
-		return new LibMinimizer(sourceDir);
+		return new LibraryMinimizer(sourceDir);
 	}
 	
-	public LibMinimizer withLibs(String libDir) {
+	public LibraryMinimizer withLibs(String libDir) {
 		final File lib = new File(libDir);
 		
 		if (!sourceDir.exists() || !sourceDir.isDirectory()) {
@@ -71,7 +71,7 @@ public final class LibMinimizer {
 		return this;
 	}
 	
-	public LibMinimizer output(String outDir) {
+	public LibraryMinimizer output(String outDir) {
 		final File out = new File(outDir);
 		
 		if (!out.exists() && !out.mkdirs()) {
