@@ -56,9 +56,14 @@ resolving the dependencies of a binary class you can:
 ListenerRegistrar.listeners(new Object() {
 			
     @Subscribe
-    public void listen(OperationStartEvent e) {
-        //do stuff
-    }
+	public void listenOnStart(ClassDependencyResolutionStartEvent e) {
+	    // this will be called when the resolution starts
+	}
+			
+	@Subscribe
+	public void listenOnEnd(ClassDependencyResolutionEndEvent e) {
+	    // this will be called when the resolution ends
+	}
 }).register();
 ```
 
