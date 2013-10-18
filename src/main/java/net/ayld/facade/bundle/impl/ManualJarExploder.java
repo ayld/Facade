@@ -12,7 +12,7 @@ import java.util.jar.JarFile;
 
 import net.ayld.facade.bundle.JarExploder;
 import net.ayld.facade.component.ListenableComponent;
-import net.ayld.facade.event.model.JarExtractionStartUpdate;
+import net.ayld.facade.event.model.JarExtractionStartEvent;
 import net.ayld.facade.exception.ExtractionException;
 import net.ayld.facade.model.ExplodedJar;
 import net.ayld.facade.util.Tokenizer;
@@ -42,7 +42,7 @@ public class ManualJarExploder extends ListenableComponent implements JarExplode
 	
 	@Override
 	public ExplodedJar explode(JarFile jar) throws IOException {// XXX huge jumbo method
-		eventBus.post(new JarExtractionStartUpdate("extracting: " + jar.getName(), new File(jar.getName()), new File(workDir)));
+		eventBus.post(new JarExtractionStartEvent("extracting: " + jar.getName() + ", to: " + workDir, this.getClass()));
 		
 		final String jarName = Tokenizer.delimiter(File.separator).tokenize(jar.getName()).lastToken();
 		final String jarPath = Joiner.on(File.separator).join(workDir, jarName);

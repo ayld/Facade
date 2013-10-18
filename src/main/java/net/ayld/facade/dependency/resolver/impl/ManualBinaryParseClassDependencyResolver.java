@@ -5,7 +5,8 @@ import java.util.Set;
 
 import net.ayld.facade.component.ListenableComponent;
 import net.ayld.facade.dependency.resolver.DependencyResolver;
-import net.ayld.facade.event.model.ClassResolverUpdate;
+import net.ayld.facade.event.model.ClassDependencyResolutionEndEvent;
+import net.ayld.facade.event.model.ClassDependencyResolutionStartEvent;
 import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
 
@@ -23,7 +24,7 @@ public class ManualBinaryParseClassDependencyResolver extends ListenableComponen
 
 	@Override
 	public Set<ClassName> resolve(ClassFile classFile) throws IOException {
-		eventBus.post(new ClassResolverUpdate("resolving: " + classFile.physicalFile().getAbsolutePath()));
+		eventBus.post(new ClassDependencyResolutionStartEvent("resolving: " + classFile.physicalFile().getAbsolutePath(), this.getClass()));
 		
 		final JavaClass javaClass = new ClassParser(classFile.toString()).parse();
 		
@@ -32,7 +33,7 @@ public class ManualBinaryParseClassDependencyResolver extends ListenableComponen
 		
 		classWalker.visit();
 		
-		eventBus.post(new ClassResolverUpdate("resolved: " + dependencyVisitor.getFoundDependencies()));
+		eventBus.post(new ClassDependencyResolutionEndEvent("resolved: " + dependencyVisitor.getFoundDependencies(), this.getClass()));
 		
 		return dependencyVisitor.getFoundDependencies();
 	}

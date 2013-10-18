@@ -5,7 +5,8 @@ import java.util.Set;
 
 import net.ayld.facade.component.ListenableComponent;
 import net.ayld.facade.dependency.resolver.DependencyResolver;
-import net.ayld.facade.event.model.SourceResolverUpdate;
+import net.ayld.facade.event.model.SourceDependencyResolutionEndEvent;
+import net.ayld.facade.event.model.SourceDependencyResolutionStartEvent;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
 import net.ayld.facade.util.Tokenizer;
@@ -22,7 +23,7 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 
 	@Override
 	public Set<ClassName> resolve(SourceFile source) throws IOException {
-		eventBus.post(new SourceResolverUpdate("resolving: " + source.physicalFile().getAbsolutePath()));
+		eventBus.post(new SourceDependencyResolutionStartEvent("resolving: " + source.physicalFile().getAbsolutePath(), this.getClass()));
 		
 		final String sourceFileContent = Resources.toString(source.physicalFile().toURI().toURL(), Charsets.UTF_8);
 		
@@ -41,7 +42,7 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 			}
 		}
 		
-		eventBus.post(new SourceResolverUpdate("resolved: " + result));
+		eventBus.post(new SourceDependencyResolutionEndEvent("resolved: " + result, this.getClass()));
 		
 		return ImmutableSet.copyOf(result);
 	}

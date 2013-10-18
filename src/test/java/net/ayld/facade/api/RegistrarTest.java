@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import junit.framework.Assert;
-import net.ayld.facade.event.model.JarExtractionStartUpdate;
+import net.ayld.facade.event.model.OperationStartEvent;
 import net.ayld.facade.util.Tokenizer;
 
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class RegistrarTest {
 			.withLibs(toPath(Resources.getResource("test-classes/test-lib-dir")))
 			.getFile();
 		
-		Assert.assertTrue(callCountListener.getCallCount() == 2);
+		Assert.assertTrue(callCountListener.getCallCount() == 6);
 	}
 	
 	private String toPath(URL uri) {
@@ -37,7 +37,7 @@ public class RegistrarTest {
 		private int callCount = 0;
 
 		@Subscribe
-		public void listen(JarExtractionStartUpdate u) {
+		public void listen(OperationStartEvent u) {
 			callCount++;
 		}
 		
