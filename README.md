@@ -62,7 +62,7 @@ ListenerRegistrar.listeners(new Object() {
 }).register();
 ```
 
-There is who yerarchy of events you can listen to, there is a wiki page on this also.
+There is a yerarchy of events you can listen to, there is a wiki page on this also.
 
 ## Notes
 
