@@ -16,10 +16,9 @@ Facade can resolve the dependencies of .java source files.
 Currently like this:
 
 ```java
-FacadeApi
-  .buildWithDefaultConfig()
-  .dependencies()
-  .fromSource(SourceFile.fromFile(aFile));
+final Set<ClassName> dependencies = Dependencies
+    .ofSource(SourceFile.fromFilepath("/abs/path/to/Source.java"))
+    .set();
 ```
 
 ### Binary Class Dependency Resolution
@@ -27,42 +26,43 @@ FacadeApi
 Facade can also resolve the dependencies of compiled binary .class files:
 
 ```java
-FacadeApi
-  .buildWithDefaultConfig()
-  .dependencies()
-  .fromClass(ClassFile.fromFile(aFile));
+final Set<ClassName> dependencies = Dependencies
+    .ofClass(ClassFile.fromFilepath("/abs/path/to/Class.class"))
+    .set();
 ```
+
+The `Dependencies` API can also work with the classpath or with Core API `File` objects (no streams yet though).
+For more info on the `Dependencies` API have a look at the wiki.
 
 ### Library minimization
 
-This will try to find all the 'actual dependencies' that a set of sources use and package them in a Jar.
+This will try to find all the 'actual dependencies' that a set of sources use, package them in a Jar and return it.
 
 ```java
-final JarFile facadeJar = ApiBuilder
-                            .buildWithDefaultConfig()
-                            .compressDependencies(srcDir, libsDir);
+final JarFile outJar = LibraryMinimizer
+    .forSourcesAt("/abs/path/to/src/dir")
+    .withLibs("/abs/path/to/libs") // this can also be a Maven ~/.m2/repository
+    .getFile();
 ```
 
-### Update listeners
+You can also set the output dir for the minimizer, have a look at the wiki for info.
+
+### Component Events
 
 Facade can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
 resolving the dependencies of a binary class you can:
 
 ```java
-ApiBuilder
-	.buildWithDefaultConfig()
-	.addListener(new Object() {
-	
-		@Subscribe
-		public void receiveClassResolverUpdates(ClassResolverUpdate u) {
-		  System.out.println(u);
-		}
-	})
-	.dependencies
-	.fromClass(ClassFile.fromFile(aFile));
+ListenerRegistrar.listeners(new Object() {
+			
+    @Subscribe
+    public void listen(OperationStartEvent e) {
+        //do stuff
+    }
+}).register();
 ```
 
-
+There is who yerarchy of events you can listen to, there is a wiki page on this also.
 
 ## Notes
 
