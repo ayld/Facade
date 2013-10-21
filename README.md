@@ -67,7 +67,7 @@ ListenerRegistrar.listeners(new Object() {
 }).register();
 ```
 
-There is a whole yerarchy of events you can listen to, there is [a wiki page](https://github.com/ayld/Facade/wiki/Component-Events-and-Listeners) on this also.
+There is a whole hierarchy of events you can listen to, there is [a wiki page](https://github.com/ayld/Facade/wiki/Component-Events-and-Listeners) on this also.
 
 ## Notes
 
