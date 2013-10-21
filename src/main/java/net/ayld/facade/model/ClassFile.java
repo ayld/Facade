@@ -7,6 +7,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Set;
 
+import net.ayld.facade.dependency.resolver.DependencyResolver;
+import net.ayld.facade.util.Components;
+
 import org.apache.bcel.classfile.ClassParser;
 
 import com.google.common.collect.ImmutableSet;
@@ -33,6 +36,8 @@ public class ClassFile { // XXX magic numbers
 			(byte) 0xBA,
 			(byte) 0xBE
 	);
+	
+	private Set<ClassName> dependencies;
 	
 	private final File classFile;
 	private final ClassName qualifiedName;
@@ -148,6 +153,23 @@ public class ClassFile { // XXX magic numbers
 		return true;
 	}
 
+	/** 
+	 * Returns the dependencies of this {@link ClassFile}
+	 * */
+	public Set<ClassName> dependencies() {
+		final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.<DependencyResolver<ClassFile>>getInstance();
+		if (dependencies == null) {
+			try {
+				
+				dependencies = classDependencyResolver.resolve(this);
+				
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+		return ImmutableSet.copyOf(dependencies);
+	}
+	
 	/** 
 	 * Returns the wrapped class file as a {@link File}.
 	 * 

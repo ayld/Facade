@@ -6,19 +6,14 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class TestClassFile {
-	
-	@Test
-	public void valid() {
-		ClassFile.fromClasspath("test-classes/ClassName.class");
-	}
+public class TestSourceFile {
 	
 	@Test
 	public void dependencies() {
-		final Set<ClassName> dependencies = ClassFile.fromClasspath("test-classes/ClassName.class").dependencies();
+		final Set<ClassName> dependencies = SourceFile.fromClasspath("test-classes/ValidCoffee.java").dependencies();
 		
 		Assert.assertTrue(dependencies != null);
-		Assert.assertTrue(dependencies.size() == 6);
+		Assert.assertTrue(dependencies.size() == 3);
 		
 		// I should not be able to change the state
 		try {
