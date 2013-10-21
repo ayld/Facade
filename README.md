@@ -32,7 +32,7 @@ final Set<ClassName> dependencies = Dependencies
 ```
 
 The `Dependencies` API can also work with the classpath or with Core API `File` objects (no streams yet though).
-For more info on the `Dependencies` API have a look at the wiki.
+For more info on the `Dependencies` API have [a look at the wiki](https://github.com/ayld/Facade/wiki/Dependencies-API).
 
 ### Library minimization
 
@@ -67,7 +67,7 @@ ListenerRegistrar.listeners(new Object() {
 }).register();
 ```
 
-There is a whole yerarchy of events you can listen to, there is a [wiki page](https://github.com/ayld/Facade/wiki/Component-Events-and-Listeners) on this also.
+There is a whole yerarchy of events you can listen to, there is [a wiki page](https://github.com/ayld/Facade/wiki/Component-Events-and-Listeners) on this also.
 
 ## Notes
 
