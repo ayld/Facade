@@ -216,7 +216,10 @@ public final class Files { // XXX this is actually rather procedural ...
 			@Override
 			public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
 				
-				if (path.getFileName().toString().endsWith(ext)) {
+				final String filepath = path.getFileName().toString();
+				final String fileExtension = Tokenizer.delimiter(FILE_EXTENSION_DELIMITER).tokenize(filepath).lastToken();
+				
+				if (fileExtension.equals(ext)) {
 					result.add(path.toFile());
 				}
 				

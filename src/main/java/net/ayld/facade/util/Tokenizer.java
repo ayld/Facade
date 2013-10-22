@@ -25,7 +25,9 @@ public final class Tokenizer {
 	}
 
 	public Tokenizer tokenize(String string) {
-		tokens = Lists.newArrayList(Splitter.on(delimiter).split(string));
+		if (string.contains(delimiter)) {
+			tokens = Lists.newArrayList(Splitter.on(delimiter).split(string));
+		}
 		return this;
 	}
 	

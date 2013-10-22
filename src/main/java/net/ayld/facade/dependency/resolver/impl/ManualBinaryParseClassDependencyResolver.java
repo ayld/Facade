@@ -22,6 +22,13 @@ import com.google.common.collect.Sets;
 
 public class ManualBinaryParseClassDependencyResolver extends ListenableComponent implements DependencyResolver<ClassFile>{
 
+	private static final String BINARY_ARRAY_ID_PREFIX = "[";
+	private static final String BINARY_TYPE_PREFIX = "L";
+	private static final String BINARY_ARRAY_ID_SUFFIX = ";";
+	
+	private static final String ARRAY_ID_PREFIX_REGEX = "\\" + BINARY_ARRAY_ID_PREFIX + "+";
+	private static final String TYPE_PREFIX_REGEX = BINARY_TYPE_PREFIX;
+	
 	@Override
 	public Set<ClassName> resolve(ClassFile classFile) throws IOException {
 		eventBus.post(new ClassDependencyResolutionStartEvent("resolving: " + classFile.physicalFile().getAbsolutePath(), this.getClass()));
@@ -63,6 +70,18 @@ public class ManualBinaryParseClassDependencyResolver extends ListenableComponen
 			final ConstantPool cp = javaClass.getConstantPool();
 			
 			String dependency = constantClass.getBytes(cp);
+			
+			// handle array dependencies
+			// if this is an array dependency remove identifiers
+			if (dependency.startsWith(BINARY_ARRAY_ID_PREFIX)) {
+				dependency = dependency.replaceAll(ARRAY_ID_PREFIX_REGEX, "");
+				dependency = dependency.replaceAll(BINARY_ARRAY_ID_SUFFIX, "");
+			}
+			
+			// handle binary type notations
+			if (dependency.startsWith(TYPE_PREFIX_REGEX)) {
+				dependency = dependency.replaceAll(TYPE_PREFIX_REGEX, "");
+			}
 			
 			// because for some reason BCEL returns dependencies like this:
 			//

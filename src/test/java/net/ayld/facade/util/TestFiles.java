@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 
+import junit.framework.Assert;
 import static junit.framework.Assert.assertTrue;
 
 import org.junit.Before;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,21 +36,33 @@ public class TestFiles {
 		final File work = new File(workDir);
 		delete(work);
 		
-		final Set<File> testFiles = ImmutableSet.of(
-				new File(Resources.getResource("test-classes/ClassName.class").toURI()),
-				new File(Resources.getResource("test-classes/CoreRenderer.class").toURI()),
-				new File(Resources.getResource("test-classes/PrimePartialViewContext.class").toURI()),
-				new File(Resources.getResource("test-classes/ValidCoffee.java").toURI())
-		);
-		
 		if (!work.mkdirs()) { // recreate work dir
 			throw new IOException("unnable to create directory: " + work);
 		} 
 		
 		final File subWork = new File(Joiner.on(File.separator).join(work.getAbsolutePath(), SUB_DIR_TEST_NAME));
 		if (!subWork.mkdirs()) {
-			throw new IOException("unnable to create directory: " + work);
+			throw new IOException("unnable to create directory: " + subWork);
 		}
+		
+		// create a 'class' named dir in an attempt to confuse the util into thinking its a file
+		final File classDir = new File(Joiner.on(File.separator).join(subWork.getAbsolutePath(), "class"));
+		if (!classDir.mkdirs()) {
+			throw new IOException("unnable to create directory: " + classDir);
+		}
+		
+		// create a file named 'class' with no extension in the workDir
+		final File fakeClass = new File(Joiner.on(File.separator).join(classDir.getAbsolutePath(), "class"));
+		if (!fakeClass.createNewFile()) {
+			throw new IOException("unnable to create file: " + fakeClass);
+		}
+		
+		final Set<File> testFiles = ImmutableSet.of(
+				new File(Resources.getResource("test-classes/ClassName.class").toURI()),
+				new File(Resources.getResource("test-classes/CoreRenderer.class").toURI()),
+				new File(Resources.getResource("test-classes/PrimePartialViewContext.class").toURI()),
+				new File(Resources.getResource("test-classes/ValidCoffee.java").toURI())
+		);
 		
 		for (File testFile : testFiles) {
 			com.google.common.io.Files.copy(testFile, new File(Joiner.on(File.separator).join(workDir, testFile.getName())));
@@ -60,10 +74,10 @@ public class TestFiles {
 	public void withExtensionNonRecursive() throws IOException {
 		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).list();
 		
-		System.out.println(found);
-		
 		assertTrue(found != null && !found.isEmpty());
+		assertThatFoundFilesHaveExtensions(found);
 		assertTrue(found.size() == 3);
+		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
@@ -71,7 +85,9 @@ public class TestFiles {
 		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).list();
 		
 		assertTrue(found != null && !found.isEmpty());
+		assertThatFoundFilesHaveExtensions(found);
 		assertTrue(found.size() == 6);
+		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
@@ -79,7 +95,9 @@ public class TestFiles {
 		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
+		assertThatFoundFilesHaveExtensions(found);
 		assertTrue(found.size() == 8);
+		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
@@ -87,7 +105,9 @@ public class TestFiles {
 		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
 
 		assertTrue(found != null && !found.isEmpty());
+		assertThatFoundFilesHaveExtensions(found);
 		assertTrue(found.size() == 4);
+		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
@@ -95,7 +115,9 @@ public class TestFiles {
 		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
+		assertThatFoundFilesHaveExtensions(found);
 		assertTrue(found.size() == 2);
+		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
@@ -103,7 +125,9 @@ public class TestFiles {
 		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
+		assertThatFoundFilesHaveExtensions(found);
 		assertTrue(found.size() == 1);
+		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
@@ -111,7 +135,8 @@ public class TestFiles {
 		final List<File> found = Files.in(workDir).all();
 		
 		assertTrue(found != null && !found.isEmpty());
-		assertTrue(found.size() == 8);
+		assertTrue(found.size() == 9);
+		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
@@ -119,7 +144,9 @@ public class TestFiles {
 		final List<File> found = Files.in(workDir).nonRecursive().all();
 		
 		assertTrue(found != null && !found.isEmpty());
+		assertThatFoundFilesHaveExtensions(found);
 		assertTrue(found.size() == 4);
+		assertThatFoundAreFiles(found);
 	}
 	
 	@Test
@@ -127,6 +154,23 @@ public class TestFiles {
 		final File found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").single();
 		
 		assertTrue(found != null);
+		assertThatFoundAreFiles(Lists.newArrayList(found));
+	}
+	
+	private void assertThatFoundFilesHaveExtensions(List<File> found) {
+		for (File f : found) {
+			if (Tokenizer.delimiter(".").tokenize(f.getAbsolutePath()).tokens().size() != 2) {
+				Assert.fail("found file: " + f.getAbsolutePath() + ", doesn't have an extension");
+			}
+		}
+	}
+	
+	private void assertThatFoundAreFiles(List<File> found) {
+		for (File f : found) {
+			if (!f.isFile()) {
+				Assert.fail("found 'file': " + f.getAbsolutePath() + ", is not a file");
+			}
+		}
 	}
 	
 	private static void delete(File file) throws IOException {

@@ -2,6 +2,7 @@ package net.ayld.facade.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
 
@@ -17,6 +18,7 @@ import net.ayld.facade.util.Files;
 import net.ayld.facade.util.Settings;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 public final class LibraryMinimizer {
@@ -109,11 +111,10 @@ public final class LibraryMinimizer {
 	
 	private Set<ClassFile> getDependenciesOfDependencies(Set<ClassFile> deps) throws IOException {
 		removeJavaApiDeps(deps);
-
-		final int sizeBeforeResolve = deps.size();
 		
 		deps.addAll(dependenciesAsFiles(classDependencyResolver.resolve(deps)));
 		
+		final int sizeBeforeResolve = deps.size();
 		if (deps.size() == sizeBeforeResolve) {
 			return deps;
 		}
@@ -122,19 +123,21 @@ public final class LibraryMinimizer {
 	}
 	
 	private void removeJavaApiDeps(Set<ClassFile> deps) {
-		for (ClassFile dep : deps) {
-			if (dep.qualifiedName().toString().startsWith(JAVA_API_ROOT_PACKAGE)) {
-				deps.remove(dep);
-			}
+		for (Iterator<ClassFile> iterator = deps.iterator(); iterator.hasNext();) {
+			
+			 final ClassFile dep = iterator.next();
+			 
+			 if (dep.qualifiedName().toString().startsWith(JAVA_API_ROOT_PACKAGE)) {
+				 iterator.remove();
+			 }
 		}
 	}
 	
 	private Set<ClassFile> dependenciesAsFiles(Set<ClassName> dependencyNames) throws IOException {
 		
-		final Set<File> libClasses = Sets.newHashSet();
-		for (File allLibClasses : Files.in(workDir).withExtension(ClassFile.EXTENSION).list()) {
-			libClasses.add(allLibClasses);
-		}
+		final Set<File> libClasses = ImmutableSet.copyOf(
+				Files.in(workDir).withExtension(ClassFile.EXTENSION).list()
+	    );
 		
 		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependencyNames.size());
 		for (ClassName dependencyName : dependencyNames) {
