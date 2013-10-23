@@ -32,8 +32,10 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 		for (String line : Splitter.on("\n").split(sourceFileContent)) {
 			
 			// we reached class definition, no point to loop any further
-			if (line.startsWith("public class"))
+			String publicClassDefinition = SourceFile.PUBLIC_KEYWORD + " " + SourceFile.CLASS_KEYWORD;
+			if (line.startsWith(publicClassDefinition) || line.startsWith(SourceFile.CLASS_KEYWORD)) {
 				break;
+			}
 			
 			if (line.startsWith(SourceFile.IMPORT_KEYWOD)) {
 				

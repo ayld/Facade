@@ -25,6 +25,8 @@ public class SourceFile {
 	public static final String PACKAGE_KEYWORD = "package";
 	public static final String IMPORT_KEYWOD = "import";
 	public static final String WILDCARD_IMPORT_SUFFIX = "*";
+	public static final String CLASS_KEYWORD = "class";
+	public static final String PUBLIC_KEYWORD = "public";
 	
 	private static Set<String> VALID_SOURCE_FILE_FIRST_WORDS = ImmutableSet.of(IMPORT_KEYWOD, PACKAGE_KEYWORD);
 	
