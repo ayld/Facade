@@ -20,7 +20,7 @@ import com.google.common.io.Resources;
 
 @ThreadSafe
 public class ManualParseSourceDependencyResolver extends ListenableComponent implements DependencyResolver<SourceFile>{
-
+	
 	@Override
 	public Set<ClassName> resolve(SourceFile source) throws IOException {
 		eventBus.post(new SourceDependencyResolutionStartEvent("resolving: " + source.physicalFile().getAbsolutePath(), this.getClass()));
@@ -30,6 +30,10 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 		// we can somehow select only lines starting with import so we don't need to iterate over every single line
 		final Set<ClassName> result = Sets.newHashSet();
 		for (String line : Splitter.on("\n").split(sourceFileContent)) {
+			
+			// we reached class definition, no point to loop any further
+			if (line.startsWith("public class"))
+				break;
 			
 			if (line.startsWith(SourceFile.IMPORT_KEYWOD)) {
 				
