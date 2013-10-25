@@ -21,7 +21,7 @@ public class RegistrarTest {
 		ListenerRegistrar.listeners(callCountListener).register();
 		
 		LibraryMinimizer
-			.forSourcesAt(toPath(Resources.getResource("test-classes/test-src-dir")))
+			.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
 			.withLibs(toPath(Resources.getResource("test-classes/test-lib-dir")))
 			.getFile();
 		

@@ -17,10 +17,14 @@ public class MinimizerTest {
 	
 	@Test
 	public void minimize() throws IOException {
+		minimizeTestClasses();
+	}
+
+	private void minimizeTestClasses() throws IOException {
 		final JarFile outJar = LibraryMinimizer
-			.forSourcesAt(toPath(Resources.getResource("test-classes/test-src-dir")))
-			.withLibs(toPath(Resources.getResource("test-classes/test-lib-dir")))
-			.getFile();
+				.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
+				.withLibs(toPath(Resources.getResource("test-classes/test-lib-dir")))
+				.getFile();
 		
 		Assert.assertTrue(outJar != null);
 		

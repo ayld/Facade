@@ -51,7 +51,7 @@ public final class LibraryMinimizer {
 		this.sourceDir = sourceDir;
 	}
 
-	public static LibraryMinimizer forSourcesAt(String srcDir) {
+	public static LibraryMinimizer sources(String srcDir) {
 		final File sourceDir = new File(srcDir);
 		
 		if (!sourceDir.exists() || !sourceDir.isDirectory()) {

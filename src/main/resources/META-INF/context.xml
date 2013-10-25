@@ -12,11 +12,31 @@
 		
        default-lazy-init="true">
 
-	<import resource="classpath:META-INF/components/service.xml" />
 
 	<context:annotation-config />
 	
+	<import resource="classpath:META-INF/components/service.xml" />
+	<import resource="classpath:META-INF/components/concurrent.xml" />
+	
 	<context:component-scan base-package="net.ayld"/>
+	
+	<bean id="workDir" class="java.lang.String" factory-method="valueOf">
+		<constructor-arg value="${jar.compaction.dir}" type="java.lang.Object"/>
+	</bean>
+	
+	<bean id="defaultOutJarName" class="java.lang.String" factory-method="valueOf">
+		<constructor-arg value="${jar.facade.name}" type="java.lang.Object"/>
+	</bean>
+	
+	<bean id="defaultOutJar" class="java.lang.String" factory-method="valueOf">
+		<constructor-arg value="#{workDir.concat(defaultOutJarName)}" type="java.lang.Object"/>
+	</bean>
+	
+	<bean id="statusUpdateEventBus" class="com.google.common.eventbus.EventBus"/>
+	
+	<bean id="parentListenableComponent" class="net.ayld.facade.component.ListenableComponent" abstract="true">
+		<property name="eventBus" ref="statusUpdateEventBus"/>
+	</bean>
 	
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:config.properties"/>
@@ -28,5 +48,4 @@
             </list>
         </property>
     </bean>
-    
 </beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		
+		http://www.springframework.org/schema/util
+		http://www.springframework.org/schema/util/spring-util.xsd">
+		
+		<import resource="classpath:META-INF/common.xml" />
+		
+		<bean id="workDir" class="java.lang.String" factory-method="valueOf">
+			<constructor-arg value="${jar.extraction.dir}" type="java.lang.Object"/>
+		</bean>
+		
+		<bean id="jarExploder" class="net.ayld.facade.bundle.impl.CuncurrentManualJarExploder">
+			<property name="workDir" value="${jar.extraction.dir}"/>
+			<property name="eventBus">
+				<bean class="com.google.common.eventbus.EventBus"/>
+			</property>
+			<property name="threadPool">
+				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+					<constructor-arg value="50" type="int"/>
+				</bean>
+			</property>
+		</bean>
+</beans>

@@ -47,6 +47,11 @@ public class ExplodedJar {
 	}
 
 	@Override
+	public String toString() {
+		return getExtractedPath();
+	}
+
+	@Override
 	public int hashCode() {
 		final HashFunction hf = Hashing.md5();
 		
