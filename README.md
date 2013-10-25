@@ -6,7 +6,7 @@ Facade
 Facade tries to create a jar from all of the jars used by a project.
 The facade jar should contain only classes the project actually uses, nothing else.
 
-This is currently just a library, but it should evolve to a Maven plugin and perhaps a web project.
+This is currently just a library, but it should [evolve to a Maven plugin](https://github.com/amaranthius/facade-maven) and perhaps a web project.
 
 ## Features
 
