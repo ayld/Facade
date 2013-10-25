@@ -1,0 +1,139 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Facade</title>
+  <meta name="description" content="Facade significantly minimizes the space used by your project's /lib ">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Facade</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Facade significantly minimizes the space used by your project's /lib </p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/ayld/Facade/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/ayld/Facade/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/ayld/Facade" class="code">View Facade on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <p><a href="https://travis-ci.org/ayld/Facade"><img src="https://travis-ci.org/ayld/Facade.png?branch=master" alt="Build Status"></a></p>
+
+<h1>
+<a name="facade" class="anchor" href="#facade"><span class="octicon octicon-link"></span></a>Facade</h1>
+
+<p>Facade tries to create a jar from all of the jars used by a project.
+The facade jar should contain only classes the project actually uses, nothing else.</p>
+
+<p>This is currently just a library, but it should evolve to a Maven plugin and perhaps a web project.</p>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<h3>
+<a name="source-dependency-resolution" class="anchor" href="#source-dependency-resolution"><span class="octicon octicon-link"></span></a>Source Dependency Resolution</h3>
+
+<p>Facade can resolve the dependencies of .java source files. 
+Currently like this:</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">final</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">ClassName</span><span class="o">&gt;</span> <span class="n">dependencies</span> <span class="o">=</span> <span class="n">Dependencies</span>
+    <span class="o">.</span><span class="na">ofSource</span><span class="o">(</span><span class="n">SourceFile</span><span class="o">.</span><span class="na">fromFilepath</span><span class="o">(</span><span class="s">"/abs/path/to/Source.java"</span><span class="o">))</span>
+    <span class="o">.</span><span class="na">set</span><span class="o">();</span>
+</pre></div>
+
+<h3>
+<a name="binary-class-dependency-resolution" class="anchor" href="#binary-class-dependency-resolution"><span class="octicon octicon-link"></span></a>Binary Class Dependency Resolution</h3>
+
+<p>Facade can also resolve the dependencies of compiled binary .class files:</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">final</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">ClassName</span><span class="o">&gt;</span> <span class="n">dependencies</span> <span class="o">=</span> <span class="n">Dependencies</span>
+    <span class="o">.</span><span class="na">ofClass</span><span class="o">(</span><span class="n">ClassFile</span><span class="o">.</span><span class="na">fromFilepath</span><span class="o">(</span><span class="s">"/abs/path/to/Class.class"</span><span class="o">))</span>
+    <span class="o">.</span><span class="na">set</span><span class="o">();</span>
+</pre></div>
+
+<p>The <code>Dependencies</code> API can also work with the classpath or with Core API <code>File</code> objects (no streams yet though).
+For more info on the <code>Dependencies</code> API have <a href="https://github.com/ayld/Facade/wiki/Dependencies-API">a look at the wiki</a>.</p>
+
+<h3>
+<a name="library-minimization" class="anchor" href="#library-minimization"><span class="octicon octicon-link"></span></a>Library minimization</h3>
+
+<p>This will try to find all the 'actual dependencies' that a set of sources use, package them in a Jar and return it.</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">final</span> <span class="n">JarFile</span> <span class="n">outJar</span> <span class="o">=</span> <span class="n">LibraryMinimizer</span>
+    <span class="o">.</span><span class="na">forSourcesAt</span><span class="o">(</span><span class="s">"/abs/path/to/src/dir"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">withLibs</span><span class="o">(</span><span class="s">"/abs/path/to/libs"</span><span class="o">)</span> <span class="c1">// this can also be a Maven ~/.m2/repository</span>
+    <span class="o">.</span><span class="na">getFile</span><span class="o">();</span>
+</pre></div>
+
+<p>You can also set the output dir for the minimizer, have a look at the wiki for info.</p>
+
+<h3>
+<a name="component-events" class="anchor" href="#component-events"><span class="octicon octicon-link"></span></a>Component Events</h3>
+
+<p>Facade can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
+resolving the dependencies of a binary class you can:</p>
+
+<div class="highlight highlight-java"><pre><span class="n">ListenerRegistrar</span><span class="o">.</span><span class="na">listeners</span><span class="o">(</span><span class="k">new</span> <span class="n">Object</span><span class="o">()</span> <span class="o">{</span>
+
+    <span class="nd">@Subscribe</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">listenOnStart</span><span class="o">(</span><span class="n">ClassDependencyResolutionStartEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// this will be called when the resolution starts</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Subscribe</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">listenOnEnd</span><span class="o">(</span><span class="n">ClassDependencyResolutionEndEvent</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// this will be called when the resolution ends</span>
+    <span class="o">}</span>
+<span class="o">}).</span><span class="na">register</span><span class="o">();</span>
+</pre></div>
+
+<p>There is a whole hierarchy of events you can listen to, there is <a href="https://github.com/ayld/Facade/wiki/Component-Events-and-Listeners">a wiki page</a> on this also.</p>
+
+<h2>
+<a name="notes" class="anchor" href="#notes"><span class="octicon octicon-link"></span></a>Notes</h2>
+
+<p>Keep in mind that we're currently in very early alpha and the API changes constantly and can change dramatically :)
+Also wildcard imports in source files like <code>import com.something.*;</code> are currently not supported. So calling source
+dependency resolution on such a file or on a set containing one will result in an exception.</p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/ayld" class="avatar"><img src="https://2.gravatar.com/avatar/18717898769caaa1916420933117e9e7?d=https%3A%2F%2Fidenticons.github.com%2F22622d8cdbe56836e1500bbb6b85b5dd.png&amp;r=x&amp;s=60" width="48" height="48"/></a> <a href="https://github.com/ayld">ayld</a> maintains <a href="https://github.com/ayld/Facade">Facade</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/ayld/Facade/tarball/master" class="tar">tar</a><a href="https://github.com/ayld/Facade/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
