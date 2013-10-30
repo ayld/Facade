@@ -43,7 +43,9 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 					throw new IllegalArgumentException("wildcard imports: " + line + ", not currently supported");
 				}
 				
-				final String dependency = Tokenizer.delimiter(" ").tokenize(line).lastToken().replaceAll(";", "");
+				final String dependency = Tokenizer.delimiter(" ").tokenize(line).lastToken()
+										.replaceAll(";", "")
+										.replaceAll("\r", "");
 				result.add(new ClassName(dependency));
 			}
 		}

@@ -47,7 +47,7 @@ public class TestManualDependencyBundleResolver {
 		for (URL bundleUrl : bundleUrls) {
 			
 			// make sure extracted folders are not already created
-			final String jarName = Tokenizer.delimiter(File.separator).tokenize(bundleUrl.toString()).lastToken();
+			final String jarName = Tokenizer.delimiter("/").tokenize(bundleUrl.toString()).lastToken();
 			final File extractedDir = new File(Joiner.on(File.separator).join(workDir, jarName));
 			if (extractedDir.exists()) {
 				delete(extractedDir);

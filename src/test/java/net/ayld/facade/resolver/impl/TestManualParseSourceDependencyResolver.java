@@ -43,7 +43,7 @@ public class TestManualParseSourceDependencyResolver {
 		for (String line : lines) {
 			if (line.startsWith(JAVA_IMPORT_KEYWOD)) {
 				
-				final String dependency = line.split(" ")[1].replaceAll(";", ""); // not very pretty ...
+				final String dependency = line.split(" ")[1].replaceAll(";", "").replaceAll("\r", ""); // not very pretty ...
 				dependencies.add(dependency);
 			}
 		}
