@@ -13,7 +13,7 @@ public class TestSourceFile {
 		final Set<ClassName> dependencies = SourceFile.fromClasspath("test-classes/ValidCoffee.java").dependencies();
 		
 		Assert.assertTrue(dependencies != null);
-		Assert.assertTrue(dependencies.size() == 3);
+		Assert.assertTrue(dependencies.size() == 4);
 		
 		// I should not be able to change the state
 		try {

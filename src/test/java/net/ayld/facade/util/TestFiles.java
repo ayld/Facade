@@ -29,11 +29,11 @@ public class TestFiles {
 	private static final String SUB_DIR_TEST_NAME = "sub";
 
 	@Autowired
-	private String workDir;
+	private String filesWorkDir;
 	
 	@Before
 	public void prepare() throws URISyntaxException, IOException {
-		final File work = new File(workDir);
+		final File work = new File(filesWorkDir);
 		delete(work);
 		
 		if (!work.mkdirs()) { // recreate work dir
@@ -65,14 +65,14 @@ public class TestFiles {
 		);
 		
 		for (File testFile : testFiles) {
-			com.google.common.io.Files.copy(testFile, new File(Joiner.on(File.separator).join(workDir, testFile.getName())));
+			com.google.common.io.Files.copy(testFile, new File(Joiner.on(File.separator).join(filesWorkDir, testFile.getName())));
 			com.google.common.io.Files.copy(testFile, new File(Joiner.on(File.separator).join(subWork.getAbsolutePath(), testFile.getName())));
 		}
 	}
 	
 	@Test
 	public void withExtensionNonRecursive() throws IOException {
-		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).list();
+		final List<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).list();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -82,7 +82,7 @@ public class TestFiles {
 	
 	@Test
 	public void withExtensionRecursive() throws IOException {
-		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).list();
+		final List<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).list();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -92,7 +92,7 @@ public class TestFiles {
 	
 	@Test
 	public void inclusiveRecursive() throws IOException {
-		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
+		final List<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -102,7 +102,7 @@ public class TestFiles {
 	
 	@Test
 	public void inclusiveNonRecursive() throws IOException {
-		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
+		final List<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").inclusive();
 
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -112,7 +112,7 @@ public class TestFiles {
 	
 	@Test
 	public void exclusiveRecursive() throws IOException {
-		final List<File> found = Files.in(workDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
+		final List<File> found = Files.in(filesWorkDir).withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -122,7 +122,7 @@ public class TestFiles {
 	
 	@Test
 	public void exclusiveNonRecursive() throws IOException {
-		final List<File> found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
+		final List<File> found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").exclusive();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -132,7 +132,7 @@ public class TestFiles {
 	
 	@Test
 	public void all() throws IOException {
-		final List<File> found = Files.in(workDir).all();
+		final List<File> found = Files.in(filesWorkDir).all();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertTrue(found.size() == 9);
@@ -141,7 +141,7 @@ public class TestFiles {
 	
 	@Test
 	public void allNonRecursive() throws IOException {
-		final List<File> found = Files.in(workDir).nonRecursive().all();
+		final List<File> found = Files.in(filesWorkDir).nonRecursive().all();
 		
 		assertTrue(found != null && !found.isEmpty());
 		assertThatFoundFilesHaveExtensions(found);
@@ -151,7 +151,7 @@ public class TestFiles {
 	
 	@Test
 	public void single() throws IOException {
-		final File found = Files.in(workDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").single();
+		final File found = Files.in(filesWorkDir).nonRecursive().withExtension(JAVA_CLASS_FILE_EXTENSION).named("ValidCoffee").single();
 		
 		assertTrue(found != null);
 		assertThatFoundAreFiles(Lists.newArrayList(found));

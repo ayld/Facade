@@ -16,6 +16,8 @@
 	
 	<context:component-scan base-package="net.ayld"/>
 	
+	<bean id="workDir" class="net.ayld.facade.test.util.WorkDirPathLocatorBeanFactory"/>
+	
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:config.properties"/>
 	</bean>

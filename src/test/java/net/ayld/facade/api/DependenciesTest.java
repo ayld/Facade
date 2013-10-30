@@ -31,6 +31,6 @@ public class DependenciesTest {
 		
 		Assert.assertTrue(dependencies != null);
 		Assert.assertTrue(!dependencies.isEmpty());
-		Assert.assertTrue(dependencies.size() == 3);
+		Assert.assertTrue(dependencies.size() == 4);
 	}
 }

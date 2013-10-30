@@ -11,11 +11,7 @@
 		
 		<import resource="classpath:META-INF/common.xml" />
 		
-		<bean id="extractionDir" class="java.lang.String" factory-method="valueOf">
-			<constructor-arg value="${jar.extraction.dir}" type="java.lang.Object"/>
-		</bean>
-				
-		<bean id="workDir" class="java.lang.String" factory-method="valueOf">
-			<constructor-arg value="#{extractionDir.concat('/testFiles')}" type="java.lang.Object"/>
+		<bean id="filesWorkDir" class="java.lang.String" factory-method="valueOf">
+			<constructor-arg value="#{workDir.concat('/testFiles')}" type="java.lang.Object"/>
 		</bean>		
 </beans>
