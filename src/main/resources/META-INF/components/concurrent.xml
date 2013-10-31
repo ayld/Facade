@@ -27,4 +27,12 @@
 				</bean>
 			</property>
 		</bean>
+		
+		<bean id="sourceDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ConcurrentManualSourceDependencyResolver" parent="parentListenableComponent">
+			<property name="threadPool">
+				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+					<constructor-arg value="${cuncurrent.source.resolver.thread.pool.size}" type="int"/>
+				</bean>
+			</property>
+		</bean>
 </beans>
