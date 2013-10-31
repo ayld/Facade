@@ -19,4 +19,12 @@
 				</bean>
 			</property>
 		</bean>
+		
+		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ConcurrentManualClassDependencyResolver" parent="parentListenableComponent">
+			<property name="threadPool">
+				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+					<constructor-arg value="${cuncurrent.class.resolver.thread.pool.size}" type="int"/>
+				</bean>
+			</property>
+		</bean>
 </beans>

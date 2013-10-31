@@ -35,7 +35,7 @@ public class TestCuncurrentJarExploder {
 		
 		final Set<ExplodedJar> exploded = jarExploder.explode(toExtract);
 		
-		Assert.assertTrue(exploded.size() == 3);
+		Assert.assertTrue(exploded != null);
 		Assert.assertTrue(exploded.size() == 3);
 	}
 }

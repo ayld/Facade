@@ -1,6 +1,5 @@
 package net.ayld.facade.bundle.impl;
 
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 import java.io.File;
@@ -28,7 +27,15 @@ import com.google.common.io.Resources;
 public class TestManualJarMaker {
 	
 	private static final Set<String> CORRECT_ZIPPED_ENTRY_NAMES = ImmutableSet.of(
-			"ClassName.class", "PrimePartialViewContext.class"
+			"net/",
+			"net/ayld/",
+			"net/ayld/facade/",
+			"net/ayld/facade/model/",
+			"net/ayld/facade/model/ClassName.class", 
+			"org/",
+			"org/primefaces/",
+			"org/primefaces/context/",
+			"org/primefaces/context/PrimePartialViewContext.class"
 	);
 	
 	@Autowired
@@ -54,7 +61,6 @@ public class TestManualJarMaker {
 			final JarEntry entry = entries.nextElement();
 			
 			assertTrue(entry != null);
-			assertFalse(entry.isDirectory());
 			assertTrue(CORRECT_ZIPPED_ENTRY_NAMES.contains(entry.getName()));
 		}
 		
