@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ayld/Facade.png?branch=master)](https://travis-ci.org/ayld/Facade)
+[![Build Status](https://travis-ci.org/ayld/Facade.png?branch=master)](https://travis-ci.org/ayld/Facade)  [![Coverage Status](https://coveralls.io/repos/ayld/Facade/badge.png)](https://coveralls.io/r/ayld/Facade)
 
 Facade
 ======
