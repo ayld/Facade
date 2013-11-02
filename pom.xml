@@ -101,7 +101,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12</version>
 				<configuration>
-					<skipTests>false</skipTests>
+				<skipTests>false</skipTests>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -113,12 +113,12 @@
 			</plugin>
 			
 			<plugin>
-    			<groupId>org.eluder.coveralls</groupId>
+    				<groupId>org.eluder.coveralls</groupId>
    				<artifactId>coveralls-maven-plugin</artifactId>
-    			<version>2.0.1</version>
-    			<configuration>
-        			<repoToken>ix1mzb7cePedZHZedxbKFmtGiYYnd7Brb</repoToken>
-    			</configuration>
+    				<version>2.0.1</version>
+    				<configuration>
+        				<repoToken>hidden</repoToken>
+    				</configuration>
 			</plugin>
 		</plugins>
 	</build>
