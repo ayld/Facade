@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
@@ -27,15 +28,15 @@ import com.google.common.io.Resources;
 public class TestManualJarMaker {
 	
 	private static final Set<String> CORRECT_ZIPPED_ENTRY_NAMES = ImmutableSet.of(
-			"net/",
-			"net/ayld/",
-			"net/ayld/facade/",
-			"net/ayld/facade/model/",
-			"net/ayld/facade/model/ClassName.class", 
-			"org/",
-			"org/primefaces/",
-			"org/primefaces/context/",
-			"org/primefaces/context/PrimePartialViewContext.class"
+			"net" + File.separator,
+			Joiner.on(File.separator).join("net", "ayld") + File.separator,
+			Joiner.on(File.separator).join("net", "ayld", "facade") + File.separator,
+			Joiner.on(File.separator).join("net", "ayld", "facade", "model") + File.separator,
+			Joiner.on(File.separator).join("net", "ayld", "facade", "model", "ClassName.class"),
+			"org" + File.separator,
+			Joiner.on(File.separator).join("org", "primefaces") + File.separator,
+			Joiner.on(File.separator).join("org", "primefaces", "context") + File.separator,
+			Joiner.on(File.separator).join("org", "primefaces", "context", "PrimePartialViewContext.class")
 	);
 	
 	@Autowired
@@ -59,6 +60,8 @@ public class TestManualJarMaker {
 		while (entries.hasMoreElements()) {
 			
 			final JarEntry entry = entries.nextElement();
+			
+			System.out.println(entry);
 			
 			assertTrue(entry != null);
 			assertTrue(CORRECT_ZIPPED_ENTRY_NAMES.contains(entry.getName()));
