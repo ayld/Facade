@@ -61,8 +61,6 @@ public class TestManualJarMaker {
 			
 			final JarEntry entry = entries.nextElement();
 			
-			System.out.println(entry);
-			
 			assertTrue(entry != null);
 			assertTrue(CORRECT_ZIPPED_ENTRY_NAMES.contains(entry.getName()));
 		}
