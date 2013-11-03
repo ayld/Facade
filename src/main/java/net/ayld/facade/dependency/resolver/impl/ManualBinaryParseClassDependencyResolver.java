@@ -79,7 +79,7 @@ public class ManualBinaryParseClassDependencyResolver extends ListenableComponen
 			}
 			
 			// handle binary type notations
-			if (dependency.startsWith(TYPE_PREFIX_REGEX)) {
+			if (dependency.startsWith(BINARY_TYPE_PREFIX)) {
 				dependency = dependency.replaceAll(TYPE_PREFIX_REGEX, "");
 			}
 			
