@@ -2,7 +2,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>net.wayld.facade</groupId>
+	<groupId>net.ayld.facade</groupId>
 	<artifactId>facade</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	
