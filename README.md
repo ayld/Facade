@@ -39,7 +39,7 @@ For more info on the `Dependencies` API have [a look at the wiki](https://github
 This will try to find all the 'actual dependencies' that a set of sources use, package them in a Jar and return it.
 
 ```java
-final JarFile outJar = LibraryMinimizer
+final JarFile outJar = Minimizer
     .forSourcesAt("/abs/path/to/src/dir")
     .withLibs("/abs/path/to/libs") // this can also be a Maven ~/.m2/repository
     .getFile();
