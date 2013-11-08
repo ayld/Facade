@@ -14,6 +14,7 @@ import net.ayld.facade.util.Tokenizer;
 
 import org.junit.Test;
 
+import com.google.common.base.Joiner;
 import com.google.common.io.Resources;
 
 public class MinimizerTest {
@@ -58,7 +59,7 @@ public class MinimizerTest {
 		final String outJarName = Tokenizer.delimiter(File.separator).tokenize(outJar.getName()).lastToken();
 		Assert.assertTrue(outJarName.equals(Settings.DEFAULT_FACADE_JAR_NAME.getValue()));
 		
-		Assert.assertTrue("org.primefaces.json.JSONArray, mandatory include not found", outJar.getEntry("org/primefaces/json/JSONArray.class") != null);
+		Assert.assertTrue("org.primefaces.json.JSONArray, mandatory include not found", outJar.getEntry(Joiner.on(File.separator).join("org", "primefaces", "json", "JSONArray.class")) != null);
 		
 		final Enumeration<JarEntry> mandatoryEntries = mandatoryJar.entries();
 		
@@ -75,7 +76,9 @@ public class MinimizerTest {
 			while (actualEntries.hasMoreElements()) {
 				final JarEntry actualEntry = actualEntries.nextElement();
 				
-				if (mandatoryEntry.getName().equals(actualEntry.getName())) {
+				final String mandatoryEntryName = normalize(mandatoryEntry.getName());
+				final String actualEntryName = normalize(actualEntry.getName());
+				if (mandatoryEntryName.equals(actualEntryName)) {
 					found = true;
 					break;
 				}
@@ -84,6 +87,18 @@ public class MinimizerTest {
 				Assert.fail("entry: " + mandatoryEntry.getName() + ", not found");
 			}
 		}
+	}
+	
+	// Here be dragons.
+	// A.K.A. The-Magic-Method-Of-Many-Slashes
+	private String normalize(String jarEntryName) {
+		if (jarEntryName.contains("/")) {
+			return jarEntryName.replace("/", File.separator);
+		}
+		if (jarEntryName.contains("\\")) {
+			return jarEntryName.replace("\\", File.separator); // because Windows is awesome !
+		}
+		return jarEntryName;
 	}
 
 	private String toPath(URL uri) {
