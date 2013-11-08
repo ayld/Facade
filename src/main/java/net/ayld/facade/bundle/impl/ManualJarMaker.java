@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
@@ -33,7 +34,7 @@ public class ManualJarMaker implements JarMaker{
 			final ClassFile clazz = ClassFile.fromFile(classFile);
 			final String simpleName = clazz.qualifiedName().shortName();
 			
-			final String packages = clazz.qualifiedName().toString().replaceAll(simpleName, "");
+			final String packages = clazz.qualifiedName().toString().replaceAll(escapeRegexChars(simpleName), "");
 			final StringBuilder packageDirs = new StringBuilder();
 			
 			for (String packageName : Splitter.on(".").split(packages)) {
@@ -72,6 +73,10 @@ public class ManualJarMaker implements JarMaker{
 		return new JarFile(facadeJarName);
 	}
 
+	private String escapeRegexChars(String str) {
+		return Pattern.quote(str);
+	}
+	
 	private void makeOutputDir() {
 		// ignoring result because it is ok for the parent to exist
 		new File(new File(facadeJarName).getParent()).mkdirs();
