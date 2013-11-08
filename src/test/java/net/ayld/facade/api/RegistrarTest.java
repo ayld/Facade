@@ -20,10 +20,10 @@ public class RegistrarTest {
 		
 		ListenerRegistrar.listeners(callCountListener).register();
 		
-		LibraryMinimizer
+		Minimizer
 			.sources(toPath(Resources.getResource("test-classes/test-src-dir")))
-			.withLibs(toPath(Resources.getResource("test-classes/test-lib-dir")))
-			.getFile();
+			.libs(toPath(Resources.getResource("test-classes/test-lib-dir")))
+			.getJar();
 		
 		Assert.assertTrue(callCountListener.getCallCount() >= 3); // this is not too correct as the event bus is in another thread and call count may vary
 	}

@@ -4,7 +4,8 @@ import org.springframework.context.ApplicationContext;
 
 public enum Components {
 	JAR_MAKER("jarMaker"),
-	JAR_EXPLODER("jarExploder"),
+	LIB_JAR_EXPLODER("jarExploder"),
+	EXPLICIT_JAR_EXPLODER("explicitJarExploder"),
 	CLASS_DEPENDENCY_RESOLVER("classDependencyResolver"),
 	SOURCE_DEPENDENCY_RESOLVER("sourceDependencyResolver"),
 	DEPENDENCY_MATCHER_STRATEGY("unanimousMatcher"),

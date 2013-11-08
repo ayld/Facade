@@ -20,6 +20,15 @@
 			</property>
 		</bean>
 		
+		<bean id="explicitJarExploder" class="net.ayld.facade.bundle.impl.CuncurrentManualJarExploder" parent="parentListenableComponent">
+			<property name="workDir" value="#{mandatoryWorkDir}"/>
+			<property name="threadPool">
+				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">
+					<constructor-arg value="${cuncurrent.jar.extration.thread.pool.size}" type="int"/>
+				</bean>
+			</property>
+		</bean>
+		
 		<bean id="classDependencyResolver" class="net.ayld.facade.dependency.resolver.impl.ConcurrentManualClassDependencyResolver" parent="parentListenableComponent">
 			<property name="threadPool">
 				<bean class="java.util.concurrent.Executors" factory-method="newFixedThreadPool">

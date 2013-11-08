@@ -24,6 +24,10 @@
 		<constructor-arg value="${jar.compaction.dir}" type="java.lang.Object"/>
 	</bean>
 	
+	<bean id="mandatoryWorkDir" class="java.lang.String" factory-method="valueOf">
+		<constructor-arg value="${jar.mandatory.extraction.dir}" type="java.lang.Object"/>
+	</bean>
+	
 	<bean id="defaultOutJarName" class="java.lang.String" factory-method="valueOf">
 		<constructor-arg value="${jar.facade.name}" type="java.lang.Object"/>
 	</bean>

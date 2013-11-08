@@ -10,6 +10,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.JarFile;
 
+import net.ayld.facade.event.model.JarExtractionStartEvent;
 import net.ayld.facade.model.ExplodedJar;
 
 import org.springframework.beans.factory.annotation.Required;
@@ -23,6 +24,8 @@ public class CuncurrentManualJarExploder extends ManualJarExploder {
 	
 	@Override
 	public Set<ExplodedJar> explode(Set<JarFile> jars) throws IOException {
+		eventBus.post(new JarExtractionStartEvent("Starting concurrent extraction", this.getClass()));
+		
 		final Set<ExplodedJar> result = Sets.newHashSet();
 
 		final Set<Callable<ExplodedJar>> extractionTasks = Sets.newHashSetWithExpectedSize(jars.size());

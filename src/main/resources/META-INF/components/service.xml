@@ -16,6 +16,10 @@
 			<property name="workDir" value="#{workDir}"/>
 		</bean>
 		
+		<bean id="explicitJarExploder" class="net.ayld.facade.bundle.impl.ManualJarExploder" parent="parentListenableComponent">
+			<property name="workDir" value="#{mandatoryWorkDir}"/>
+		</bean>
+		
 		<bean id="jarMaker" class="net.ayld.facade.bundle.impl.ManualJarMaker">
 			<property name="zippedJarName" value="#{defaultOutJar}"/>
 		</bean>

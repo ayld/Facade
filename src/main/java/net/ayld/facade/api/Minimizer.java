@@ -2,6 +2,7 @@ package net.ayld.facade.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.jar.JarFile;
@@ -21,17 +22,19 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
-public final class LibraryMinimizer {
+public final class Minimizer {
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
 	
+	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY.<DependencyMatcherStrategy>getInstance();
 	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.<DependencyResolver<ClassFile>>getInstance();
 	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.<DependencyResolver<SourceFile>>getInstance();
-	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY.<DependencyMatcherStrategy>getInstance();
 	
-	private final JarExploder jarExploder = Components.JAR_EXPLODER.<JarExploder>getInstance();
 	private final JarMaker jarMaker = Components.JAR_MAKER.<JarMaker>getInstance();
+	private final JarExploder libJarExploder = Components.LIB_JAR_EXPLODER.<JarExploder>getInstance();
+	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.<JarExploder>getInstance(); // don't use if you're under 18
 	
 	private String workDir = Settings.DEFAULT_OUT_DIR.getValue();
+	private String explicitOutDir = Settings.EXPLICIT_OUT_DIR.getValue();
 	private File outJar = new File(
 		Joiner
 			.on(File.separator)
@@ -41,7 +44,10 @@ public final class LibraryMinimizer {
 	private File libDir;
 	private final File sourceDir;
 
-	private LibraryMinimizer(File sourceDir) {
+	private Set<JarFile> explicitIncludeJars = Sets.newHashSet();
+	private Set<ClassName> explicitIncludeClasses = Sets.newHashSet();
+	
+	private Minimizer(File sourceDir) {
 		final File outJarDir = new File(outJar.getParent());
 		
 		if (!outJarDir.exists() && !outJarDir.mkdirs()) {
@@ -51,17 +57,17 @@ public final class LibraryMinimizer {
 		this.sourceDir = sourceDir;
 	}
 
-	public static LibraryMinimizer sources(String srcDir) {
+	public static Minimizer sources(String srcDir) {
 		final File sourceDir = new File(srcDir);
 		
 		if (!sourceDir.exists() || !sourceDir.isDirectory()) {
 			throw new IllegalArgumentException("directory at: " + srcDir + " does not exist or is not a directory");
 		}
 		
-		return new LibraryMinimizer(sourceDir);
+		return new Minimizer(sourceDir);
 	}
 	
-	public LibraryMinimizer withLibs(String libDir) {
+	public Minimizer libs(String libDir) {
 		final File lib = new File(libDir);
 		
 		if (!sourceDir.exists() || !sourceDir.isDirectory()) {
@@ -73,7 +79,7 @@ public final class LibraryMinimizer {
 		return this;
 	}
 	
-	public LibraryMinimizer output(String outDir) {
+	public Minimizer output(String outDir) {
 		final File out = new File(outDir);
 		
 		if (!out.exists() && !out.mkdirs()) {
@@ -85,7 +91,19 @@ public final class LibraryMinimizer {
 		return this;
 	}
 	
-	public JarFile getFile() throws IOException {
+	public Minimizer forceInclude(JarFile... jars) {
+		this.explicitIncludeJars.addAll(Arrays.asList(jars));
+		
+		return this;
+	}
+	
+	public Minimizer forceInclude(ClassName... classes) {
+		this.explicitIncludeClasses.addAll(Arrays.asList(classes));
+		
+		return this;
+	}
+	
+	public JarFile getJar() throws IOException {
 		final String libDirPath = libDir.getAbsolutePath();
 		extractLibJars(libDirPath);
 		
@@ -94,32 +112,56 @@ public final class LibraryMinimizer {
 			sources.add(SourceFile.fromFile(sourceFile));
 		}
 		
-		final Set<ClassFile> sourceDependenciesAsFiles = dependenciesAsFiles(sourceDependencyResolver.resolve(sources));
-		final Set<ClassFile> libDependenciesAsFiles = getDependenciesOfDependencies(sourceDependenciesAsFiles);
+		final Set<ClassName> sourceDependencies = sourceDependencyResolver.resolve(sources);
 		
-		final Set<File> dependenciesForPackaging = Sets.newHashSetWithExpectedSize(sourceDependenciesAsFiles.size() + libDependenciesAsFiles.size());
+		final Set<File> libClasses = ImmutableSet.copyOf(
+				Files.in(workDir).withExtension(ClassFile.EXTENSION).list()
+		);
+		final Set<ClassFile> foundDependencies = findInlib(sourceDependencies, libClasses);
 		
-		for (ClassFile sourceDep : sourceDependenciesAsFiles) {
-			dependenciesForPackaging.add(sourceDep.physicalFile());
-		}
-		for (ClassFile libDep : libDependenciesAsFiles) {
-			dependenciesForPackaging.add(libDep.physicalFile());
+		addDependenciesOfDependencies(foundDependencies, libClasses);
+		foundDependencies.addAll(explicitDependenciesAsFiles(this.explicitIncludeJars, this.explicitIncludeClasses, libClasses));
+		
+		final Set<File> dependenciesForPackaging = Sets.newHashSetWithExpectedSize(foundDependencies.size());
+		for (ClassFile dep : foundDependencies) {
+			dependenciesForPackaging.add(dep.physicalFile());
 		}
 		
 		return jarMaker.zip(dependenciesForPackaging);
 	}
 	
-	private Set<ClassFile> getDependenciesOfDependencies(Set<ClassFile> deps) throws IOException {
+	private Set<ClassFile> explicitDependenciesAsFiles(Set<JarFile> explicitIncludeJars, Set<ClassName> explicitIncludeClasses, final Set<File> libClasses) throws IOException {
+		final Set<ClassFile> result = Sets.newHashSet();
+		
+		for (ClassName includeClass : explicitIncludeClasses) {
+			
+			final Set<ClassFile> foundInLib = findInlib(ImmutableSet.of(includeClass), libClasses);
+			if (foundInLib.size() < 1) {
+				throw new IllegalStateException("can't find user defined class: " + includeClass + ", in: " + libDir.getAbsolutePath());
+			}
+			result.addAll(foundInLib);
+		}
+		
+		explicitJarExploder.explode(explicitIncludeJars);
+		
+		for (File extracted : Files.in(explicitOutDir).withExtension(ClassFile.EXTENSION).list()) {
+			result.add(ClassFile.fromFile(extracted));
+		}
+		
+		return result;
+	}
+	
+	private Set<ClassFile> addDependenciesOfDependencies(Set<ClassFile> deps, final Set<File> libClasses) throws IOException {
 		removeJavaApiDeps(deps);
 		
-		deps.addAll(dependenciesAsFiles(classDependencyResolver.resolve(deps)));
+		deps.addAll(findInlib(classDependencyResolver.resolve(deps), libClasses));
 		
 		final int sizeBeforeResolve = deps.size();
 		if (deps.size() == sizeBeforeResolve) {
 			return deps;
 		}
 		
-		return getDependenciesOfDependencies(deps);
+		return addDependenciesOfDependencies(deps, libClasses);
 	}
 	
 	private void removeJavaApiDeps(Set<ClassFile> deps) {
@@ -133,11 +175,7 @@ public final class LibraryMinimizer {
 		}
 	}
 	
-	private Set<ClassFile> dependenciesAsFiles(Set<ClassName> dependencyNames) throws IOException {
-		
-		final Set<File> libClasses = ImmutableSet.copyOf(
-				Files.in(workDir).withExtension(ClassFile.EXTENSION).list()
-	    );
+	private Set<ClassFile> findInlib(Set<ClassName> dependencyNames, Set<File> libClasses) throws IOException {
 		
 		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependencyNames.size());
 		for (ClassName dependencyName : dependencyNames) {
@@ -160,6 +198,6 @@ public final class LibraryMinimizer {
 			libJars.add(new JarFile(jarFile));
 		}
 		
-		jarExploder.explode(libJars);
+		libJarExploder.explode(libJars);
 	}
 }

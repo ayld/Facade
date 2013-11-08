@@ -18,16 +18,15 @@ public enum Contexts {
 		
 		final String activeProfiles = System.getProperty(SPRING_PROFILES_ENV_VAR_NAME);
 		
-		final boolean concurrentyEnabled;
-		
+		final boolean concurrencyEnabled;
 		if (!Strings.isNullOrEmpty(activeProfiles)) {
-			concurrentyEnabled = activeProfiles.contains(Settings.CONCURRENT_PROFILE_NAME.getValue());
+			concurrencyEnabled = activeProfiles.contains(Settings.CONCURRENT_PROFILE_NAME.getValue());
 		}
 		else {
-			concurrentyEnabled = Boolean.valueOf(Settings.CONCURRENCY_ENABLED.getValue());
+			concurrencyEnabled = Boolean.valueOf(Settings.CONCURRENCY_ENABLED.getValue());
 		}
 		
-		if (concurrentyEnabled) {
+		if (concurrencyEnabled) {
 			final ConfigurableEnvironment env = (ConfigurableEnvironment) this.context.getEnvironment();
 			env.setActiveProfiles(Settings.CONCURRENT_PROFILE_NAME.getValue());
 		}
