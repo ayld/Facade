@@ -40,8 +40,8 @@ This will try to find all the 'actual dependencies' that a set of sources use, p
 
 ```java
 final JarFile outJar = Minimizer
-    .forSourcesAt("/abs/path/to/src/dir")
-    .withLibs("/abs/path/to/libs") // this can also be a Maven ~/.m2/repository
+    .sources("/abs/path/to/src/dir")
+    .libs("/abs/path/to/libs") // this can also be a Maven ~/.m2/repository
     .getFile();
 ```
 
