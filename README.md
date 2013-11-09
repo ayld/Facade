@@ -42,7 +42,7 @@ This will try to find all the 'actual dependencies' that a set of sources use, p
 final JarFile outJar = Minimizer
     .sources("/abs/path/to/src/dir")
     .libs("/abs/path/to/libs") // this can also be a Maven ~/.m2/repository
-    .getFile();
+    .getJar();
 ```
 
 You can also set the output dir for the minimizer, have a look at the wiki for info.
