@@ -45,7 +45,7 @@ final JarFile outJar = Minimizer
     .getJar();
 ```
 
-You can also set the output dir for the minimizer, have a look at the wiki for info.
+You can also set the output dir for the minimizer, have [a look at the wiki](https://github.com/ayld/Facade/wiki/Library-Minimization) for info.
 
 ### Component Events
 
