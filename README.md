@@ -73,10 +73,10 @@ There is a whole hierarchy of events you can listen to, there is [a wiki page](h
 
 In order to use the library you can either:
 
- * [Download the latest binary .jar](https://github.com/ayld/Facade/releases/tag/v0.5-alpha.3), 
+ * [Download the latest binary .jar](https://github.com/ayld/Facade/releases/tag/v0.6-alpha.1), 
 in which case you will also need the dependencies. You can either find them [in the POM](https://github.com/ayld/Facade/blob/master/pom.xml),
 or download them from [the dependencies project](https://github.com/ayld/facade-dependencies).
- * Build [the latest tag](https://github.com/ayld/Facade/tree/v0.5-alpha.1) with [Maven 3.x](http://maven.apache.org/). Just
+ * Build [the latest tag](https://github.com/ayld/Facade/releases/tag/v0.6-alpha.1) with [Maven 3.x](http://maven.apache.org/). Just
 clone it and run `mvn clean install` in your local copy. This way Maven will get the dependencies for you.
 
 You can also build the master branch (on your own risk) in the same way you build the latest tag.
