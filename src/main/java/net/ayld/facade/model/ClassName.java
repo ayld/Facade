@@ -1,11 +1,10 @@
 package net.ayld.facade.model;
 
+import com.google.common.collect.ImmutableSet;
+import net.ayld.facade.util.Tokenizer;
+
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import com.google.common.collect.ImmutableSet;
-
-import net.ayld.facade.util.Tokenizer;
 
 /** 
  * Meant to represent a fully qualified class name.
@@ -45,8 +44,6 @@ public final class ClassName {
 	 * Does everything it can to make sure that the argument is in fact a fully qualified class name and not something else.
 	 * 
 	 * @param qualifiedClassName a class name
-	 * 
-	 * @return a new {@link ClassName}
 	 * */
 	public ClassName(String qualifiedClassName) {
 		if (!isClassName(qualifiedClassName)) {

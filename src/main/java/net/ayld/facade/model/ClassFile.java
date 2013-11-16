@@ -1,20 +1,18 @@
 package net.ayld.facade.model;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.io.Resources;
+import net.ayld.facade.dependency.resolver.DependencyResolver;
+import net.ayld.facade.util.Components;
+import org.apache.bcel.classfile.ClassParser;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.Set;
-
-import net.ayld.facade.dependency.resolver.DependencyResolver;
-import net.ayld.facade.util.Components;
-
-import org.apache.bcel.classfile.ClassParser;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.common.io.Resources;
 
 /** 
  * Meant to represent a compiled binary .class file on the file system.
@@ -70,7 +68,7 @@ public class ClassFile { // XXX magic numbers
 	 * Creates a {@link ClassFile} from a file on the classpath rather than the file system.
 	 * Checks whether the given file is actually a class file.
 	 * 
-	 * @param classpath path to the .class resource
+	 * @param path path to the .class resource
 	 * 
 	 * @return a new {@link ClassFile}
 	 * 
@@ -145,19 +143,15 @@ public class ClassFile { // XXX magic numbers
 		for (byte b : firstFour) {
 			firstFourSet.add(b);
 		}
-		
-		if (!CAFEBABE.equals(ImmutableSet.copyOf(firstFourSet))) {
-			return false;
-		}
-		
-		return true;
-	}
+
+        return CAFEBABE.equals(ImmutableSet.copyOf(firstFourSet));
+    }
 
 	/** 
 	 * Returns the dependencies of this {@link ClassFile}
 	 * */
 	public Set<ClassName> dependencies() {
-		final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.<DependencyResolver<ClassFile>>getInstance();
+		final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();
 		if (dependencies == null) {
 			try {
 				

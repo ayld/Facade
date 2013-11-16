@@ -1,12 +1,8 @@
 package net.ayld.facade.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.jar.JarFile;
-
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import net.ayld.facade.bundle.JarExploder;
 import net.ayld.facade.bundle.JarMaker;
 import net.ayld.facade.dependency.matcher.DependencyMatcherStrategy;
@@ -18,20 +14,23 @@ import net.ayld.facade.util.Components;
 import net.ayld.facade.util.Files;
 import net.ayld.facade.util.Settings;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.jar.JarFile;
 
 public final class Minimizer {
 	private static final String JAVA_API_ROOT_PACKAGE = "java";
 	
-	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY.<DependencyMatcherStrategy>getInstance();
-	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.<DependencyResolver<ClassFile>>getInstance();
-	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.<DependencyResolver<SourceFile>>getInstance();
-	
-	private final JarMaker jarMaker = Components.JAR_MAKER.<JarMaker>getInstance();
-	private final JarExploder libJarExploder = Components.LIB_JAR_EXPLODER.<JarExploder>getInstance();
-	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.<JarExploder>getInstance(); // don't use if you're under 18
+	private final DependencyMatcherStrategy dependencyMatcherStrategy = Components.DEPENDENCY_MATCHER_STRATEGY.getInstance();
+	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();
+	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.getInstance();
+
+    private final JarMaker jarMaker = Components.JAR_MAKER.getInstance();
+    private final JarExploder libJarExploder = Components.LIB_JAR_EXPLODER.getInstance();
+	private final JarExploder explicitJarExploder = Components.EXPLICIT_JAR_EXPLODER.getInstance(); // don't use if you're under 18
 	
 	private String workDir = Settings.DEFAULT_OUT_DIR.getValue();
 	private String explicitOutDir = Settings.EXPLICIT_OUT_DIR.getValue();

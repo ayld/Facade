@@ -1,20 +1,19 @@
 package net.ayld.facade.api;
 
-import java.io.IOException;
-import java.util.Set;
-
+import com.google.common.collect.ImmutableSet;
 import net.ayld.facade.dependency.resolver.DependencyResolver;
 import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
 import net.ayld.facade.util.Components;
 
-import com.google.common.collect.ImmutableSet;
+import java.io.IOException;
+import java.util.Set;
 
 public final class Dependencies {
 	
-	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.<DependencyResolver<ClassFile>>getInstance();
-	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.<DependencyResolver<SourceFile>>getInstance();
+	private final DependencyResolver<ClassFile> classDependencyResolver = Components.CLASS_DEPENDENCY_RESOLVER.getInstance();
+	private final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.getInstance();
 	
 	private final boolean sourceResolution;
 	private final Set<?> of;
@@ -25,11 +24,11 @@ public final class Dependencies {
 	}
 
 	public static Dependencies ofSources(Set<SourceFile> sources) {
-		return new Dependencies((Set<?>) sources, true);
+		return new Dependencies(sources, true);
 	}
 	
 	public static Dependencies ofClasses(Set<ClassFile> classes) {
-		return new Dependencies((Set<?>) classes, false);
+		return new Dependencies(classes, false);
 	}
 	
 	public static Dependencies ofSource(SourceFile source) {

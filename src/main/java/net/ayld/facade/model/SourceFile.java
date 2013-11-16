@@ -1,17 +1,16 @@
 package net.ayld.facade.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Set;
-
+import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.io.Resources;
 import net.ayld.facade.dependency.resolver.DependencyResolver;
 import net.ayld.facade.util.Components;
 import net.ayld.facade.util.Tokenizer;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.io.Resources;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Set;
 
 /** 
  * Represents a Java source file.
@@ -95,7 +94,7 @@ public class SourceFile {
 	 * Returns the dependencies of this {@link SourceFile}
 	 * */
 	public Set<ClassName> dependencies() {
-		final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.<DependencyResolver<SourceFile>>getInstance();
+		final DependencyResolver<SourceFile> sourceDependencyResolver = Components.SOURCE_DEPENDENCY_RESOLVER.getInstance();
 		if (dependencies == null) {
 			try {
 				
@@ -118,9 +117,9 @@ public class SourceFile {
 		}
 		
 		final String name = sourceFile.getName();
-		final String extention = Tokenizer.delimiter(".").tokenize(name).lastToken();
+		final String extension = Tokenizer.delimiter(".").tokenize(name).lastToken();
 		
-		if (!extention.equals(EXTENTION)) {
+		if (!extension.equals(EXTENTION)) {
 			return false;
 		}
 		
@@ -128,13 +127,9 @@ public class SourceFile {
 		
 		final String firstLine = Tokenizer.delimiter("\n").tokenize(sourceFileContent).firstToken();
 		final String firstWord = Tokenizer.delimiter(" ").tokenize(firstLine).firstToken();
-		
-		if (!VALID_SOURCE_FILE_FIRST_WORDS.contains(firstWord)) {
-			return false;
-		}
-		
-		return true;
-	}
+
+        return VALID_SOURCE_FILE_FIRST_WORDS.contains(firstWord);
+    }
 
 	@Override
 	public int hashCode() {
