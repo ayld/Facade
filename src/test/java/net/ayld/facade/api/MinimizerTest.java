@@ -47,13 +47,6 @@ public class MinimizerTest {
 			
 			.getJar();
 		
-		System.out.println(outJar.getName());
-		final Enumeration<JarEntry> entries = outJar.entries();
-		while (entries.hasMoreElements()) {
-			
-			System.out.println(entries.nextElement().getName());
-		}
-		
 		Assert.assertTrue("out jar is null", outJar != null);
 		
 		final String outJarName = Tokenizer.delimiter(File.separator).tokenize(outJar.getName()).lastToken();
