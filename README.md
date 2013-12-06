@@ -89,3 +89,8 @@ You can also build the master branch (on your own risk) in the same way you buil
 Keep in mind that we're currently in very early alpha and the API changes constantly and can change dramatically :)
 Also wildcard imports in source files like `import com.something.*;` are currently not supported. So calling source
 dependency resolution on such a file or on a set containing one will result in an exception.
+
+#### Donations
+
+We are accepting such!
+If you have massive amounts of cash lying around and would like to donate large portion of them for the betterment of mankind we are currently on [Gittip](https://www.gittip.com/ayld/) (symbolic donations are also greatly appreciated).
