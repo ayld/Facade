@@ -18,6 +18,8 @@ import net.ayld.facade.model.ExplodedJar;
 import net.ayld.facade.util.Tokenizer;
 import net.ayld.facade.util.annotation.ThreadSafe;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 
 import com.google.common.base.Joiner;
@@ -27,6 +29,8 @@ import com.google.common.collect.Sets;
 @ThreadSafe
 public class ManualJarExploder extends ListenableComponent implements JarExploder{
 
+	private static final Logger LOG = LoggerFactory.getLogger(ManualJarExploder.class);
+	
 	private String workDir;
 	
 	@Override
@@ -101,7 +105,7 @@ public class ManualJarExploder extends ListenableComponent implements JarExplode
 		final File dir = new File(workDir);
 		
 		if (!dir.mkdirs()) {
-			// TODO log warning
+			LOG.warn("Unable to create working dir : {}", dir.getAbsoluteFile());
 		}
 		
 		if (!dir.isDirectory()) {

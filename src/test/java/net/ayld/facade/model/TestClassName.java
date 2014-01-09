@@ -4,11 +4,17 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import net.ayld.facade.bundle.impl.ManualJarExploder;
+
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableSet;
 
 public class TestClassName {
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ManualJarExploder.class);
 
 	private final static Set<Character> INVALID_CLASSNAME_CHARS = ImmutableSet.of(
 			'!', '@', '#', '%', '^', '&', '*', '(', ')', '-', '+',
@@ -40,7 +46,7 @@ public class TestClassName {
 			new ClassName(validClassName);
 		} catch (Exception e) {
 			// awwwww
-			e.printStackTrace();
+			LOG.error("awwwww",e);
 			Assert.fail();
 		}
 		// yay !
@@ -55,7 +61,7 @@ public class TestClassName {
 			return;
 		}
 		// awwwww
-		System.out.println(invalidClassName + ", is valid, but should not be !");
+		LOG.error(invalidClassName + ", is valid, but should not be !");
 		Assert.fail();
 	}
 }
