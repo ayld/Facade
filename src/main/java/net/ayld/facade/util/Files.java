@@ -35,13 +35,13 @@ import com.google.common.collect.Lists;
  *  All {@link Files} methods are recursive by default.
  *  To make them non-recursive just call {@link Files#nonRecursive()} anywhere, like so:
  *  	<pre>
- *      <code> Files.in("/root").withExtention("dll").nonRecursuve().list(); </code>
+ *      <code> Files.in("/root").withExtension("dll").nonRecursive().list(); </code>
  *      <pre>
  *  So to:
  *  	<pre>
  *  - list all DLLs in the /root folder recursively:
  *  	<pre>
- *      <code>Files.in("/root").withExtention("dll").list();</code>
+ *      <code>Files.in("/root").withExtension("dll").list();</code>
  *  	<pre>
  *      Returns: ["/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]
  *      <pre>
@@ -53,17 +53,17 @@ import com.google.common.collect.Lists;
  *      <pre>
  *  - to list all DLLs in /root AND all files named 'anExe':
  *  	<pre>
- *      <code>Files.in("/root").withExtention("dll").named("anExe").inclusive();</code>
+ *      <code>Files.in("/root").withExtension("dll").named("anExe").inclusive();</code>
  *      <pre>
  *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe", "/root/aDll.dll", "/root/another.dll", "/root/sub/subDll.dll"]
  *      <pre>
- *      Note: <code>Files.in("/root").withExtention("dll").named("anExe").exclusive();</code>
+ *      Note: <code>Files.in("/root").withExtension("dll").named("anExe").exclusive();</code>
  *      <pre>
  *      Will return nothing since there are no files named 'anExe' with a extension .dll
  *      <pre>
  *  - to list all files in /root which are named 'subExe' and have the .exe extension:
  *  	<pre>
- *      <code>Files.in("/root").withExtention("exe").named("subExe").exclusive();</code>
+ *      <code>Files.in("/root").withExtension("exe").named("subExe").exclusive();</code>
  *      <pre>
  *      Returns: ["/root/anExe.exe", "/root/sub/anExe.exe"]
  *      <pre>

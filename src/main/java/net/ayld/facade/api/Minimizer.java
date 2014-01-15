@@ -43,8 +43,8 @@ public final class Minimizer {
 	private File libDir;
 	private final File sourceDir;
 
-	private Set<JarFile> explicitIncludeJars = Sets.newHashSet();
-	private Set<ClassName> explicitIncludeClasses = Sets.newHashSet();
+	private Set<JarFile> forceIncludeJars = Sets.newHashSet();
+	private Set<ClassName> forceIncludeClasses = Sets.newHashSet();
 	
 	private Minimizer(File sourceDir) {
 		final File outJarDir = new File(outJar.getParent());
@@ -91,13 +91,13 @@ public final class Minimizer {
 	}
 	
 	public Minimizer forceInclude(JarFile... jars) {
-		this.explicitIncludeJars.addAll(Arrays.asList(jars));
+		this.forceIncludeJars.addAll(Arrays.asList(jars));
 		
 		return this;
 	}
 	
 	public Minimizer forceInclude(ClassName... classes) {
-		this.explicitIncludeClasses.addAll(Arrays.asList(classes));
+		this.forceIncludeClasses.addAll(Arrays.asList(classes));
 		
 		return this;
 	}
@@ -116,25 +116,33 @@ public final class Minimizer {
 		final Set<File> libClasses = ImmutableSet.copyOf(
 				Files.in(workDir).withExtension(ClassFile.EXTENSION).list()
 		);
-		final Set<ClassFile> foundDependencies = findInlib(sourceDependencies, libClasses);
+		final Set<ClassFile> foundDependencies = findInLib(sourceDependencies, libClasses);
 		
 		addDependenciesOfDependencies(foundDependencies, libClasses);
-		foundDependencies.addAll(explicitDependenciesAsFiles(this.explicitIncludeJars, this.explicitIncludeClasses, libClasses));
+		foundDependencies.addAll(forceIncludeDependenciesAsFiles(this.forceIncludeJars, this.forceIncludeClasses, libClasses));
 		
 		final Set<File> dependenciesForPackaging = Sets.newHashSetWithExpectedSize(foundDependencies.size());
 		for (ClassFile dep : foundDependencies) {
 			dependenciesForPackaging.add(dep.physicalFile());
 		}
-		
-		return jarMaker.zip(dependenciesForPackaging);
+
+        final JarFile result = jarMaker.zip(dependenciesForPackaging);
+
+        cleanWorkDir();
+
+        return result;
 	}
-	
-	private Set<ClassFile> explicitDependenciesAsFiles(Set<JarFile> explicitIncludeJars, Set<ClassName> explicitIncludeClasses, final Set<File> libClasses) throws IOException {
+
+    private void cleanWorkDir() {
+
+    }
+
+    private Set<ClassFile> forceIncludeDependenciesAsFiles(Set<JarFile> explicitIncludeJars, Set<ClassName> explicitIncludeClasses, final Set<File> libClasses) throws IOException {
 		final Set<ClassFile> result = Sets.newHashSet();
 		
 		for (ClassName includeClass : explicitIncludeClasses) {
 			
-			final Set<ClassFile> foundInLib = findInlib(ImmutableSet.of(includeClass), libClasses);
+			final Set<ClassFile> foundInLib = findInLib(ImmutableSet.of(includeClass), libClasses);
 			if (foundInLib.size() < 1) {
 				throw new IllegalStateException("can't find user defined class: " + includeClass + ", in: " + libDir.getAbsolutePath());
 			}
@@ -153,7 +161,7 @@ public final class Minimizer {
 	private Set<ClassFile> addDependenciesOfDependencies(Set<ClassFile> deps, final Set<File> libClasses) throws IOException {
 		removeJavaApiDeps(deps);
 		
-		deps.addAll(findInlib(classDependencyResolver.resolve(deps), libClasses));
+		deps.addAll(findInLib(classDependencyResolver.resolve(deps), libClasses));
 		
 		final int sizeBeforeResolve = deps.size();
 		if (deps.size() == sizeBeforeResolve) {
@@ -174,7 +182,7 @@ public final class Minimizer {
 		}
 	}
 	
-	private Set<ClassFile> findInlib(Set<ClassName> dependencyNames, Set<File> libClasses) throws IOException {
+	private Set<ClassFile> findInLib(Set<ClassName> dependencyNames, Set<File> libClasses) throws IOException {
 		
 		final Set<ClassFile> result = Sets.newHashSetWithExpectedSize(dependencyNames.size());
 		for (ClassName dependencyName : dependencyNames) {

@@ -11,8 +11,8 @@ public class ClassShortNameVsClassFilename implements MatchingCondition{
 	@Override
 	public boolean satisfied(ClassName className, ClassFile classFile) {
 		final String shortName = className.shortName();
-		final String classFilenameNoExtention = Files.getNameWithoutExtension(classFile.physicalFile().getName());
+		final String classFilenameNoExtension = Files.getNameWithoutExtension(classFile.physicalFile().getName());
 		
-		return shortName.toLowerCase().equals(classFilenameNoExtention.toLowerCase());
+		return shortName.toLowerCase().equals(classFilenameNoExtension.toLowerCase());
 	}
 }

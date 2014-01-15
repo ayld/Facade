@@ -44,8 +44,8 @@ public class ManualParseSourceDependencyResolver extends ListenableComponent imp
 				}
 				
 				final String dependency = Tokenizer.delimiter(" ").tokenize(line).lastToken()
-										.replaceAll(";", "")
-										.replaceAll("\r", "");
+										.replaceAll(";", "") // remove semicolon at end of imports
+										.replaceAll("\r", ""); // remove windows newline chars
 				result.add(new ClassName(dependency));
 			}
 		}

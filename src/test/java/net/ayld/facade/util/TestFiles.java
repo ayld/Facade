@@ -37,24 +37,24 @@ public class TestFiles {
 		delete(work);
 		
 		if (!work.mkdirs()) { // recreate work dir
-			throw new IOException("unnable to create directory: " + work);
+			throw new IOException("unable to create directory: " + work);
 		} 
 		
 		final File subWork = new File(Joiner.on(File.separator).join(work.getAbsolutePath(), SUB_DIR_TEST_NAME));
 		if (!subWork.mkdirs()) {
-			throw new IOException("unnable to create directory: " + subWork);
+			throw new IOException("unable to create directory: " + subWork);
 		}
 		
 		// create a 'class' named dir in an attempt to confuse the util into thinking its a file
 		final File classDir = new File(Joiner.on(File.separator).join(subWork.getAbsolutePath(), "class"));
 		if (!classDir.mkdirs()) {
-			throw new IOException("unnable to create directory: " + classDir);
+			throw new IOException("unable to create directory: " + classDir);
 		}
 		
 		// create a file named 'class' with no extension in the workDir
 		final File fakeClass = new File(Joiner.on(File.separator).join(classDir.getAbsolutePath(), "class"));
 		if (!fakeClass.createNewFile()) {
-			throw new IOException("unnable to create file: " + fakeClass);
+			throw new IOException("unable to create file: " + fakeClass);
 		}
 		
 		final Set<File> testFiles = ImmutableSet.of(
