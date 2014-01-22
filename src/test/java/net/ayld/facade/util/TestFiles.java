@@ -156,7 +156,30 @@ public class TestFiles {
 		assertTrue(found != null);
 		assertThatFoundAreFiles(Lists.newArrayList(found));
 	}
-	
+
+    @Test
+    public void delete() throws IOException {
+        final String tmpDir = String.valueOf(File.createTempFile("probe", "tmp").getParent());
+
+        final Joiner pathJoiner = Joiner.on(File.separator);
+
+        final String testDir = pathJoiner.join(tmpDir, "testDelete");
+
+        new File(pathJoiner.join(testDir, "dir1", "subDir")).mkdirs();
+
+        Assert.assertTrue(Directories.in(testDir).recursive().list().size() == 2);
+
+        Files.deleteRecursive(new File(testDir));
+
+        try {
+            Directories.in(testDir);
+        } catch (IllegalArgumentException e) {
+            // success
+            return;
+        }
+        Assert.fail();
+    }
+
 	private void assertThatFoundFilesHaveExtensions(List<File> found) {
 		for (File f : found) {
 			if (Tokenizer.delimiter(".").tokenize(f.getAbsolutePath()).tokens().size() != 2) {

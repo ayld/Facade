@@ -79,4 +79,23 @@ public class TestDirectories {
             Assert.assertTrue(foundDir.getAbsolutePath().endsWith(searchFor));
         }
     }
+
+    @Test
+    public void recursive() throws IOException {
+        makeSubDirs();
+        Assert.assertTrue(Directories.in(workDir).recursive().list().size() == TEST_DIR_NAMES.size() * 2);
+    }
+
+    @Test
+    public void nonRecursive() throws IOException {
+        makeSubDirs();
+        Assert.assertTrue(Directories.in(workDir).list().size() == TEST_DIR_NAMES.size());
+    }
+
+    private void makeSubDirs() {
+        final Joiner pathJoiner = Joiner.on(File.separator);
+        for (String name : TEST_DIR_NAMES) {
+            new File(pathJoiner.join(workDir, name, "subDir")).mkdirs();
+        }
+    }
 }

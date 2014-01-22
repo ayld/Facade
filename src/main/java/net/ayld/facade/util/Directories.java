@@ -45,8 +45,9 @@ public class Directories {
         return this;
     }
 
-    public void recursive() {
+    public Directories recursive() {
         this.recursive = true;
+        return this;
     }
 
     public Set<File> list() throws IOException{  // this is a tad messed up really ...
