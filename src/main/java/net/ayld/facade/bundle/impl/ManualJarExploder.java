@@ -77,7 +77,7 @@ public class ManualJarExploder extends ListenableComponent implements JarExplode
 		return new ExplodedJar(jarPath, jar);
 	}
 
-	private static void explode(JarFile source, JarEntry content, File destination) throws IOException, FileNotFoundException {
+	private static void explode(JarFile source, JarEntry content, File destination) throws IOException {
 		InputStream jarInputStream = null;
 		FileOutputStream classOutputStream = null;
 		try {

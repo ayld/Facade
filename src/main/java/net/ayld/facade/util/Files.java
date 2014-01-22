@@ -230,4 +230,18 @@ public final class Files { // XXX this is actually rather procedural ...
 		
 		return this;
 	}
+
+    public static void deleteRecursive(File file) throws IOException {
+        if (file == null || !file.exists()) {
+            return;
+        }
+        if (file.isDirectory()) {
+            for (File sub : file.listFiles()) {
+                deleteRecursive(sub);
+            }
+        }
+        if (!file.delete()) {
+            throw new IOException("failed to deleteRecursive: " + file);
+        }
+    }
 }

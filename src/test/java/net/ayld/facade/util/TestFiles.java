@@ -183,7 +183,7 @@ public class TestFiles {
 			}
 		}
 		if (!file.delete()) {
-			throw new IOException("failed to delete: " + file);
+			throw new IOException("failed to deleteRecursive: " + file);
 		}
 	}
 }

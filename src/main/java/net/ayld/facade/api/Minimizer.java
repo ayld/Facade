@@ -11,6 +11,7 @@ import net.ayld.facade.model.ClassFile;
 import net.ayld.facade.model.ClassName;
 import net.ayld.facade.model.SourceFile;
 import net.ayld.facade.util.Components;
+import net.ayld.facade.util.Directories;
 import net.ayld.facade.util.Files;
 import net.ayld.facade.util.Settings;
 
@@ -133,8 +134,11 @@ public final class Minimizer {
         return result;
 	}
 
-    private void cleanWorkDir() {
-
+    private void cleanWorkDir() throws IOException {
+        final Set<File> dirtyDirs = Directories.in(workDir).nameEndsWith(JarMaker.JAR_FILE_EXTENSION).list(); // dirty ho ho ho ;)
+        for (File dirty : dirtyDirs) {
+            Files.deleteRecursive(dirty);
+        }
     }
 
     private Set<ClassFile> forceIncludeDependenciesAsFiles(Set<JarFile> explicitIncludeJars, Set<ClassName> explicitIncludeClasses, final Set<File> libClasses) throws IOException {
@@ -200,11 +204,16 @@ public final class Minimizer {
 	
 	private void extractLibJars(String libDir) throws IOException {
 		final Set<JarFile> libJars = Sets.newHashSet();
-		
+
 		for (File jarFile : Files.in(libDir).withExtension(JarMaker.JAR_FILE_EXTENSION).list()) {
-			libJars.add(new JarFile(jarFile));
-		}
-		
+            try {
+                libJars.add(new JarFile(jarFile));
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw e;
+            }
+        }
+
 		libJarExploder.explode(libJars);
 	}
 }

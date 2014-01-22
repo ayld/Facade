@@ -49,7 +49,7 @@ public class Directories {
         this.recursive = true;
     }
 
-    public Set<File> list() throws IOException{
+    public Set<File> list() throws IOException{  // this is a tad messed up really ...
         final Set<File> result = Sets.newHashSet();
         final String root = in.getAbsolutePath();
 
