@@ -108,7 +108,7 @@ public final class Minimizer {
 		extractLibJars(libDirPath);
 		
 		final Set<SourceFile> sources = Sets.newHashSet();
-		for (File sourceFile : Files.in(sourceDir.getAbsolutePath()).withExtension(SourceFile.EXTENTION).list()) {
+		for (File sourceFile : Files.in(sourceDir.getAbsolutePath()).withExtension(SourceFile.EXTENSION).list()) {
 			sources.add(SourceFile.fromFile(sourceFile));
 		}
 		

@@ -38,21 +38,23 @@ public class TestFiles {
 		
 		if (!work.mkdirs()) { // recreate work dir
 			throw new IOException("unable to create directory: " + work);
-		} 
-		
-		final File subWork = new File(Joiner.on(File.separator).join(work.getAbsolutePath(), SUB_DIR_TEST_NAME));
+		}
+
+        final Joiner pathJoiner = Joiner.on(File.separator);
+
+        final File subWork = new File(pathJoiner.join(work.getAbsolutePath(), SUB_DIR_TEST_NAME));
 		if (!subWork.mkdirs()) {
 			throw new IOException("unable to create directory: " + subWork);
 		}
 		
 		// create a 'class' named dir in an attempt to confuse the util into thinking its a file
-		final File classDir = new File(Joiner.on(File.separator).join(subWork.getAbsolutePath(), "class"));
+		final File classDir = new File(pathJoiner.join(subWork.getAbsolutePath(), "class"));
 		if (!classDir.mkdirs()) {
 			throw new IOException("unable to create directory: " + classDir);
 		}
 		
 		// create a file named 'class' with no extension in the workDir
-		final File fakeClass = new File(Joiner.on(File.separator).join(classDir.getAbsolutePath(), "class"));
+		final File fakeClass = new File(pathJoiner.join(classDir.getAbsolutePath(), "class"));
 		if (!fakeClass.createNewFile()) {
 			throw new IOException("unable to create file: " + fakeClass);
 		}
@@ -65,8 +67,8 @@ public class TestFiles {
 		);
 		
 		for (File testFile : testFiles) {
-			com.google.common.io.Files.copy(testFile, new File(Joiner.on(File.separator).join(filesWorkDir, testFile.getName())));
-			com.google.common.io.Files.copy(testFile, new File(Joiner.on(File.separator).join(subWork.getAbsolutePath(), testFile.getName())));
+			com.google.common.io.Files.copy(testFile, new File(pathJoiner.join(filesWorkDir, testFile.getName())));
+			com.google.common.io.Files.copy(testFile, new File(pathJoiner.join(subWork.getAbsolutePath(), testFile.getName())));
 		}
 	}
 	

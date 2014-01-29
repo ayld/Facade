@@ -20,14 +20,14 @@ import java.util.Set;
  * */
 public class SourceFile {
 	
-	public static final String EXTENTION = "java";
+	public static final String EXTENSION = "java";
 	public static final String PACKAGE_KEYWORD = "package";
-	public static final String IMPORT_KEYWOD = "import";
+	public static final String IMPORT_KEYWORD = "import";
 	public static final String WILDCARD_IMPORT_SUFFIX = "*";
 	public static final String CLASS_KEYWORD = "class";
 	public static final String PUBLIC_KEYWORD = "public";
 	
-	private static Set<String> VALID_SOURCE_FILE_FIRST_WORDS = ImmutableSet.of(IMPORT_KEYWOD, PACKAGE_KEYWORD);
+	private static Set<String> VALID_SOURCE_FILE_FIRST_WORDS = ImmutableSet.of(IMPORT_KEYWORD, PACKAGE_KEYWORD);
 	
 	private Set<ClassName> dependencies;
 	private final File source;
@@ -119,7 +119,7 @@ public class SourceFile {
 		final String name = sourceFile.getName();
 		final String extension = Tokenizer.delimiter(".").tokenize(name).lastToken();
 		
-		if (!extension.equals(EXTENTION)) {
+		if (!extension.equals(EXTENSION)) {
 			return false;
 		}
 		
