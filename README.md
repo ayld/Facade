@@ -12,7 +12,7 @@ It's main target group is currently android development as space conservation is
 
 ## Features
 
-### Source Dependency Resolution
+### Source Dependency Resolution:
 
 Facade can resolve the dependencies of .java source files. 
 Currently like this:
@@ -23,7 +23,7 @@ final Set<ClassName> dependencies = Dependencies
     .set();
 ```
 
-### Binary Class Dependency Resolution
+### Binary Class Dependency Resolution:
 
 Facade can also resolve the dependencies of compiled binary .class files:
 
@@ -36,7 +36,7 @@ final Set<ClassName> dependencies = Dependencies
 The `Dependencies` API can also work with the classpath or with Core API `File` objects (no streams yet though).
 For more info on the `Dependencies` API have [a look at the wiki](https://github.com/ayld/Facade/wiki/Dependencies-API).
 
-### Library minimization
+### Library minimization:
 
 This will try to find all the 'actual dependencies' that a set of sources use, package them in a Jar and return it.
 
@@ -49,7 +49,7 @@ final JarFile outJar = Minimizer
 
 You can also set the output dir for the minimizer, have [a look at the wiki](https://github.com/ayld/Facade/wiki/Library-Minimization) for info.
 
-### Component Events
+### Component Events:
 
 Facade can notify you for updates on what it is currently doing. For instanse if you want to get detailed info while 
 resolving the dependencies of a binary class you can:
@@ -71,7 +71,7 @@ ListenerRegistrar.listeners(new Object() {
 
 There is a whole hierarchy of events you can listen to, there is [a wiki page](https://github.com/ayld/Facade/wiki/Component-Events-and-Listeners) on this also.
 
-## Usage
+### Usage:
 
 In order to use the library you can either:
 
@@ -83,14 +83,12 @@ clone it and run `mvn clean install` in your local copy. This way Maven will get
 
 You can also build the master branch (on your own risk) in the same way you build the latest tag.
 
-
-## Notes
+### Notes:
 
 Keep in mind that we're currently in very early alpha and the API changes constantly and can change dramatically :)
 Also wildcard imports in source files like `import com.something.*;` are currently not supported. So calling source
 dependency resolution on such a file or on a set containing one will result in an exception.
 
-#### Donations
+### Donations:
 
-We are accepting such!
-If you have massive amounts of cash lying around and would like to donate large portion of them for the betterment of mankind we are currently on [Gittip](https://www.gittip.com/ayld/) (symbolic donations are also greatly appreciated).
+[![Fund me on Gittip](https://raw.github.com/gittip/www.gittip.com/master/www/assets/gittip.png)](https://www.gittip.com/ayld/ "Fund me on Gittip")
