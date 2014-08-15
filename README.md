@@ -5,6 +5,9 @@ Ownership transfer
 
 The official repo for this project is now [here](https://github.com/Codarama/Facade).
 
+We're still in the "project moving" process however so until we're done you should still use this one as it will be more up-to-date.
+We'll update this readme when it is safe to use the new repo.
+
 Facade
 ======
 
