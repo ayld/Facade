@@ -1,5 +1,10 @@
 [![Build Status](https://travis-ci.org/ayld/Facade.png?branch=master)](https://travis-ci.org/ayld/Facade)  [![Coverage Status](https://coveralls.io/repos/ayld/Facade/badge.png)](https://coveralls.io/r/ayld/Facade)
 
+Ownership transfer
+======
+
+The official repo for this project is now [here](https://github.com/Codarama/Facade).
+
 Facade
 ======
 
